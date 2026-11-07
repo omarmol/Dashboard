@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cargar datos</title>
+    <link href="css/cargardatos.css" rel="stylesheet" />
+</head>
+<body>
+    <button type="button" class="pestana" id="pestanaMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menuFlotante">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+    </button>
+    <nav class="menu" id="menuFlotante" aria-label="Menú principal">
+        <div class="menu-titulo">Menú</div>
+        <a href="index.html">Dashboard</a>
+        <a href="cargardatos.html" aria-current="page">Cargar Datos</a>
+        <!--<div class="menu-sep"></div>
+        <fieldset>
+            <legend>Apariencia</legend>
+            <div class="tema">
+                <label><input type="radio" name="tema" value="light"> Claro</label>
+                <label><input type="radio" name="tema" value="dark"> Oscuro</label>
+            </div>
+        </fieldset>-->
+    </nav>
+
+
+    <main class="card">
+        <h1>Cargar datos</h1>
+        <p class="sub">Elige una fecha y ejecuta la carga. El resultado aparece debajo.</p>
+
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha">
+
+        <label class="titulo" for="archivo">Archivo Excel</label>
+        <label class="archivo" id="zonaArchivo" for="archivo">
+            <input type="file" id="archivo" accept=".xls,.xlsx,.xlsm,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+            <span class="examinar">Examinar…</span>
+            <span class="nombre" id="nombreArchivo">Ningún archivo seleccionado</span>
+        </label>
+
+        <!--<fieldset>
+            <legend>Alcance de la carga</legend>
+            <label class="opcion">
+                <input type="radio" name="modo" value="dia" checked>
+                Cargar el día seleccionado
+            </label>
+            <label class="opcion">
+                <input type="radio" name="modo" value="mes">
+                Cargar todo el mes
+            </label>
+        </fieldset>-->
+
+        <button type="button" id="btnCargar">
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="btnTexto">Cargar datos</span>
+        </button>
+
+        <div id="resultado" role="status" aria-live="polite">Aún no se ha ejecutado la carga.</div>
+    </main>
+
+    <dialog id="dlgAdvertencia" aria-labelledby="dlgTitulo">
+        <h2 id="dlgTitulo">Antes de continuar</h2>
+        <div id="dlgMensaje"></div>
+        <p>Esta acción puede modificar los datos existentes. ¿Deseas continuar?</p>
+        <div class="acciones">
+            <button type="button" class="secundario" id="dlgCancelar">Cancelar</button>
+            <button type="button" id="dlgContinuar">Continuar</button>
+        </div>
+    </dialog>
+
+    <script src="js/cargardatos.js"></script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Dashboard ECharts Clásico</title>
+    <!-- Referencias Locales -->
+    <link href="css/gridstack.min.css" rel="stylesheet" />
+
+    <!-- Referencias Locales -->
+    <link href="css/main.css" rel="stylesheet" />
+
+</head>
+<body>
+    <button type="button" class="pestana" id="pestanaMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menuFlotante">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+    </button>
+
+    <nav class="menu" id="menuFlotante" aria-label="Menú principal">
+        <div class="menu-titulo">Menú</div>
+        <a href="index.html" aria-current="page">Dashboard</a>
+        <a href="#" onclick="exportarDashboardCompletoPDF()">Exportar PDF</a>
+        <a href="cargardatos.html">Cargar Datos</a>
+        <a href="#" onclick="restaurarApariencia()">Restaurar Apariencia</a>
+        <div class="menu-sep"></div>
+        <fieldset>
+            <legend>Apariencia</legend>
+            <div id="selectorTemas" role="radiogroup" aria-label="Tema">
+                <!--<div class="tema">-->
+                <!--<label><input type="radio" name="tema" value="light"> Claro</label>
+            <label><input type="radio" name="tema" value="dark"> Oscuro</label>-->
+            </div>
+        </fieldset>
+    </nav>
+
+    <!--<div class="theme-switch-wrapper">
+        <span class="theme-label">Tema:</span>
+        <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round"></span>
+        </label>
+        <span id="theme-name" class="theme-label-name">Claro</span>
+    </div>-->
+    <!--<div id="principal" class="top">-->
+    <div id="principal" class="top">
+        <div id="primero">
+            <div class="eyebrow">Gerencia Sectorial de Control de Sistema</div>
+            <h1 class="titulo-dashboard" id="titulo_dashboard">Reporte Diario 17.09.2026</h1>
+            <div class="subtitle" id="subtitleDate">Gasoductos / Oleoductos / Poliductos</div>
+            <!--<div class="theme-switch-wrapper">
+                <span class="theme-label">Tema:</span>
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider round"></span>
+                </label>
+                <span id="theme-name" class="theme-label-name">Claro</span>
+            </div>-->
+        </div>
+        <div id="segundo" class="caja-calendario">
+            <h4 id="mes_actual"></h4>
+            <div id="barraDias" class="barra-dias">
+                <!-- Los botones se generarán aquí con JavaScript -->
+            </div>
+        </div>
+        <div id="tercero" class="top-logos"></div>
+    </div>
+    <!-- Contenedor de la barra de días -->
+
+    <div id="grid-principal" class="grid-stack">
+
+        <div class="grid-stack-item" gs-w="4" gs-h="2" id="item-gasoductos">
+            <div class="grid-stack-item-content">
+                <div class="st-card">
+                    <span class="st-dot warn"></span>
+                    <div class="st-info">
+                        <div class="st-title">Gasoductos</div>
+                        <div class="st-sub">99.7% cumplimiento</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-w="4" gs-h="2" id="item-oleoductos">
+            <div class="grid-stack-item-content">
+                <div class="st-card">
+                    <span class="st-dot ok"></span>
+                    <div class="st-info">
+                        <div class="st-title">Oleoductos</div>
+                        <div class="st-sub">137.3% cumplimiento</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-w="4" gs-h="2" id="item-poliductos">
+            <div class="grid-stack-item-content">
+                <div class="st-card">
+                    <span class="st-dot ok"></span>
+                    <div class="st-info">
+                        <div class="st-title">Poliductos</div>
+                        <div class="st-sub">Recep. 5/5 · Entregas 5/5 ≥100%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="grid-stack-item borde-1" gs-w="4" gs-h="3" id="item-crudo">
+            <div class="grid-stack-item-content kpi-card">
+                <div class="kpi-label">Entrega crudo total</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">41.187,35</span>
+                    <span class="kpi-unit">Bbl</span>
+                </div>
+                <div class="kpi-delta up">▲ 37.3% vs. programado</div>
+                <div class="kpi-delta up">▲ 25.4% vs. ayer</div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item borde-1" gs-w="4" gs-h="3" id="item-glp">
+            <div class="grid-stack-item-content kpi-card">
+                <div class="kpi-label">Entrega GLP total</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">7.662,65</span>
+                    <span class="kpi-unit">Bbl</span>
+                </div>
+                <div class="kpi-delta up">▲ 5.1% vs. programado</div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item borde-1" gs-w="4" gs-h="3" id="item-cumplimiento">
+            <div class="grid-stack-item-content kpi-card">
+                <div class="kpi-label">Cumplimiento poliductos</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">100.0</span>
+                    <span class="kpi-unit">% prom.</span>
+                </div>
+                <div class="kpi-delta up">Recep. 5/5 · Entregas 5/5 ≥100%</div>
+                <div class="kpi-delta up">▲ 9.2% vs. ayer</div>
+            </div>
+        </div>
+
+        <!-- Transporte por Empresas, Exportación/Mercado Interno, Proceso y Consumo Plantas -->
+        <div class="grid-stack-item" gs-id="gi-separador-gasoductos" gs-w="12" gs-h="1">
+            <div class="grid-stack-item-content grid-stack-separador">
+                <div style="width: 100%; height: 100%;">SISTEMA DE GASODUCTOS</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-transporte-por-empresas" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div style="width: 100%; height: 100%;">
+                    <div class="tp-panel">
+
+                        <div class="tp-header">
+                            <div>
+                                <h3 class="tp-title">Transporte por Empresas</h3>
+                                <div class="tp-subtitle">YPFB TR, YPFB TSSA, GTB — Ejecutado hoy</div>
+                            </div>
+                            <span class="tp-unit">MMmc</span>
+                        </div>
+
+                        <div class="tp-cards" id="tpCards">
+                            <div class="tp-card" data-id="tr">
+                                <div class="tp-logo"><img src="img/ypfbtr.jpg" alt="YPFB Transporte"></div>
+
+                                <div class="tp-value-row">
+                                    <span class="tp-value" data-f="ejecutado">24,66</span>
+                                    <span class="tp-value-unit">MMmc</span>
+                                </div>
+
+                                <div class="tp-delta flat" data-f="delta">0.3% vs. programado</div>
+
+                                <div class="tp-footer">
+                                    <div class="tp-footer-item">
+                                        <div class="lbl">Prog:</div>
+                                        <div class="val" data-f="programado">24,72</div>
+                                    </div>
+                                    <div class="tp-footer-item">
+                                        <div class="lbl">Hoy:</div>
+                                        <div class="val" data-f="hoy">24,68</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tp-card" data-id="tr">
+                                <div class="tp-logo"><img src="img/ypfbts.jpg" alt="YPFB Transierra"></div>
+
+                                <div class="tp-value-row">
+                                    <span class="tp-value" data-f="ejecutado">10,19</span>
+                                    <span class="tp-value-unit">MMmc</span>
+                                </div>
+
+                                <div class="tp-delta flat" data-f="delta">0.2% vs. programado</div>
+
+                                <div class="tp-footer">
+                                    <div class="tp-footer-item">
+                                        <div class="lbl">Prog: <b>10,21</b></div>
+                                    </div>
+                                    <div class="tp-footer-item">
+                                        <div class="lbl">Hoy: <b>10,61</b></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tp-card" data-id="tr">
+                                <div class="tp-logo"><img src="img/gtb.jpg" alt="GTB"></div>
+
+                                <div class="tp-value-row">
+                                    <span class="tp-value" data-f="ejecutado">10,3</span>
+                                    <span class="tp-value-unit">MMmc</span>
+                                </div>
+
+                                <div class="tp-delta flat" data-f="delta">0,8% vs. programado</div>
+
+                                <div class="tp-footer">
+                                    <div class="tp-footer-item">
+                                        <div class="lbl">Prog: <b>10,23</b></div>
+                                    </div>
+                                    <div class="tp-footer-item">
+                                        <div class="lbl">Hoy: <b>11,47</b></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-gas-entregas-ductos" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartGasEntregasDuctos" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-gas-entregas-plantas" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartGasEntregasPlantas" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- Recepciones por Cargador, Consumo Termoeléctricas -->
+        <div class="grid-stack-item" gs-id="gi-gas-recepciones" gs-w="8" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartGasRecepciones" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-gas-consumo-termoelectrica" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartGasConsumoXTermoelectrica" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- % Uso Diario, Transporte por Sistemas, Participación X Cargador -->
+        <div class="grid-stack-item" gs-id="gi-gas-capacidad" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartGasCapacidad" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-gas-transporte-sistema" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartGasTransporteXSistema" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-gas-participacion-cargador" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartGasParticipacionXCargador" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- Gas Transportado Evolución Mensual, Consumo X Departamento -->
+        <div class="grid-stack-item" gs-id="gi-gas-transportado-mensual" gs-w="7" gs-h="12">
+            <div class="grid-stack-item-content">
+                <div id="chartGasTransportadoMensual" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-gas-consumo-departamento" gs-w="5" gs-h="12">
+            <div class="grid-stack-item-content">
+                <div id="chartGasConsumoXDepartamento" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-id="gi-separador-terminal-arica" gs-w="12" gs-h="1">
+            <div class="grid-stack-item-content grid-stack-separador">
+                <div style="width: 100%; height: 100%;">TERMINAL ARICA</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-ole-estado-puerto" gs-w="4" gs-h="6">
+            <div class="grid-stack-item-content">
+                <div id="chartOleEstadoPuerto" style="width: 100%; height: 100%;">Estado de Puerto</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-ole-barcos-gira" gs-w="4" gs-h="6">
+            <div class="grid-stack-item-content tm-panel">
+                <div class="tm-header">
+                    <div>
+                        <h3 class="tm-title">Terminal Arica</h3>
+                        <div class="tm-subtitle">Barcos a la gira</div>
+                    </div>
+                    <span class="tm-badge">INFO</span>
+                </div>
+
+                <div class="tm-rows">
+                    <div class="tm-row">
+                        <span class="tm-label">Barco a la gira</span>
+                        <span class="tm-value">Hafnia Keftrel · DO</span>
+                    </div>
+
+                    <!-- Filas adicionales de ejemplo (puedes quitarlas) -->
+                    <div class="tm-row">
+                        <span class="tm-label">Barco a la gira</span>
+                        <span class="tm-value">Nave Ejemplo · GLP</span>
+                    </div>
+                    <div class="tm-row">
+                        <span class="tm-label">Barco a la gira</span>
+                        <span class="tm-value">Otra Nave · CR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-ole-despacho-cisternas" gs-w="4" gs-h="6">
+            <div class="grid-stack-item-content">
+                <div class="dc-panel">
+                    <h3 class="dc-title">Despacho de cisternas</h3>
+                    <div class="dc-cards" id="dcCards"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-id="gi-ole-tanques-arica" gs-w="6" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartOleTanquesArica" style="width: 100%; height: 100%;">Tanques de Almacenaje</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-grafico1" gs-w="6" gs-h="9">
+            <div class="grid-stack-item-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                <img id="imgOleaje" src="" alt="Cargando imagen..." style="max-width: 100%; max-height: 90%; object-fit: contain; display: none;" />
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-id="gi-ole-mensual-cisternas" gs-w="12" gs-h="12">
+            <div class="grid-stack-item-content">
+                <div id="chartOleResumenMensualCisternas" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+
+
+        <div class="grid-stack-item" gs-id="gi-separador-oleoductos" gs-w="12" gs-h="1">
+            <div class="grid-stack-item-content grid-stack-separador">
+                <div style="width: 100%; height: 100%;">SISTEMA DE OLEODUCTOS</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-separador-seguimiento" gs-w="12" gs-h="1">
+            <div class="grid-stack-item-content grid-stack-separador">
+                <div style="width: 100%; height: 100%;">GRÁFICOS DE SEGUIMIENTO OPERATIVO</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="perfil-ossa1" gs-w="12" gs-h="12">
+            <div class="grid-stack-item-content">
+                <div id="chartOSSA1" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="perfil-pvt" gs-w="12" gs-h="12">
+            <div class="grid-stack-item-content">
+                <div id="chartPVT" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="perfil-pcolp2" gs-w="12" gs-h="12">
+            <div class="grid-stack-item-content">
+                <div id="chartPCOLP2" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-ole-entregas-crudo" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartOleEntregasCrudo" style="width: 100%; height: 100%;">Entregas Crudo (CR)</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-ole-entregas-glp" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartOleEntregasGlp" style="width: 100%; height: 100%;">Entregas GLP</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-ole-capacidad" gs-w="4" gs-h="9">
+            <div class="grid-stack-item-content">
+                <div id="chartOleCapacidad" style="width: 100%; height: 100%;">% Uso Diario - Sistemas Oleoductos</div>
+            </div>
+        </div>
+
+
+
+
+
+        <!--<div class="grid-stack-item" gs-id="gi-novedades-gasoductos" gs-w="12" gs-h="2" >
+        <div class="grid-stack-item-content">
+            <h4 style="margin-top: 0; color: #333; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Avisos y Novedades</h4>
+            <div id="textoInformativo" style="font-size: 1.1em; color: #555; padding-top: 10px;">
+                Cargando información...
+            </div>
+        </div>
+    </div>-->
+    </div>
+
+
+    <!-- Referencias Locales -->
+    <script src="lib/echarts.min.js"></script>
+    <script src="lib/gridstack-all.js"></script>
+    <script src="lib/html2canvas.min.js"></script>
+    <script src="lib/jspdf.umd.min.js"></script>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
