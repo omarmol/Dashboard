@@ -13,11 +13,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGasEntregasDuctosService, GasEntregasDuctosService>();
         services.AddScoped<IGasConsumoXTermoelectricaService, GasConsumoXTermoelectricaService>();
         services.AddScoped<IGasCapacidadService, GasCapacidadService>();
-        services.AddScoped<IGasRecepciones, GasRecepciones>();
-        services.AddScoped<IGasParticipacionXCargador, GasParticipacionXCargador>();
-        services.AddScoped<IGasTransporteXSistema, GasTransporteXSistema>();
-        services.AddScoped<IGasConsumoXCiudad, GasConsumoXCiudad>();
-        services.AddScoped<IGasTransportadoMensual, GasTransportadoMensual>();
+        services.AddScoped<IGasRecepcionesService, GasRecepcionesService>();
+        services.AddScoped<IGasParticipacionXCargadorService, GasParticipacionXCargadorService>();
+        services.AddScoped<IGasTransporteXSistemaService, GasTransporteXSistemaService>();
+        services.AddScoped<IGasConsumoXCiudadService, GasConsumoXCiudadService>();
+        services.AddScoped<IGasTransportadoMensualService, GasTransportadoMensualService>();
         services.AddScoped<IPerfilesService, PerfilesService>();
         services.AddScoped<IOleTanquesAricaService, OleTanquesAricaService>();
         services.AddScoped<IOleCisternasAricaService, OleCisternasAricaService>();

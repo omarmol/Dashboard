@@ -3,11 +3,11 @@ using Microsoft.Data.SqlClient;
 
 namespace Dashboard.Features.Gas.Services;
 
-public class GasTransporteXSistema : IGasTransporteXSistema
+public class GasRecepcionesService : IGasRecepcionesService
 {
     private readonly string _connectionString;
 
-    public GasTransporteXSistema(IConfiguration configuration)
+    public GasRecepcionesService(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
@@ -17,7 +17,7 @@ public class GasTransporteXSistema : IGasTransporteXSistema
     public async Task<object> ObtenerPorFechaAsync(DateOnly fecha)
     {
 
-        var sistema = new List<string>();
+        var campo = new List<string>();
         var programado = new List<double>();
         var ejecutado = new List<double>();
         var hoy = new List<double>();
@@ -25,16 +25,14 @@ public class GasTransporteXSistema : IGasTransporteXSistema
         var cantidad_datos = 0;
 
 
-
         const string sql = @"
                 SELECT 
-                    sistema,
+                    campo,
                     ROUND(ISNULL(programado, 0), 2) AS programado,
                     ROUND(ISNULL(ejecutado, 0), 2) AS ejecutado,
                     ROUND(ISNULL(hoy, 0), 2) AS hoy
-                FROM gas_sistemas_transporte
-                WHERE CAST(fecha AS DATE) = @fechaFiltro
-                ORDER BY ejecutado ASC";
+                FROM gas_recepciones
+                WHERE CAST(fecha AS DATE) = @fechaFiltro";
 
         await using var conexion = new SqlConnection(_connectionString);
         await conexion.OpenAsync();
@@ -47,17 +45,16 @@ public class GasTransporteXSistema : IGasTransporteXSistema
 
         while (await lector.ReadAsync())
         {
-            sistema.Add(Convert.ToString(lector["sistema"]) ?? string.Empty);
-            programado.Add(Convert.ToDouble(lector["programado"]));
-            ejecutado.Add(Convert.ToDouble(lector["ejecutado"]));
-            hoy.Add(Convert.ToDouble(lector["hoy"]));
-            cantidad_datos = cantidad_datos + 1;
-
+            campo.Add(lector.GetString(0));
+            programado.Add(lector.GetDouble(1));
+            ejecutado.Add(lector.GetDouble(2));
+            hoy.Add(lector.GetDouble(3));
+            cantidad_datos++;
         }
 
         var resultado = new
             {
-                sistema,
+                campo,
                 programado,
                 ejecutado,
                 hoy,

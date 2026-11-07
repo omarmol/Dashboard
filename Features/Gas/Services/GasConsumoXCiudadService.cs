@@ -3,11 +3,11 @@ using Microsoft.Data.SqlClient;
 
 namespace Dashboard.Features.Gas.Services;
 
-public class GasConsumoXCiudad : IGasConsumoXCiudad
+public class GasConsumoXCiudadService : IGasConsumoXCiudadService
 {
     private readonly string _connectionString;
 
-    public GasConsumoXCiudad(IConfiguration configuration)
+    public GasConsumoXCiudadService(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");

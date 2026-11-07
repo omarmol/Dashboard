@@ -2,7 +2,7 @@
 
 namespace Dashboard.Features.Gas.Services;
 
-public interface IGasTransporteXSistema
+public interface IGasTransportadoMensualService
 {
     // Task<IEnumerable<object>> ObtenerTodosAsync();
     Task<object> ObtenerPorFechaAsync(DateOnly fecha);

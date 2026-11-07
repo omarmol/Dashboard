@@ -27,27 +27,27 @@ public static class DatosGasEndpoints
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
 
-        grupo.MapGet("/recepciones", async (DateOnly fecha, IGasRecepciones servicio) =>
+        grupo.MapGet("/recepciones", async (DateOnly fecha, IGasRecepcionesService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
 
-        grupo.MapGet("/participacion-cargador", async (DateOnly fecha, IGasParticipacionXCargador servicio) =>
+        grupo.MapGet("/participacion-cargador", async (DateOnly fecha, IGasParticipacionXCargadorService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
 
-        grupo.MapGet("/transporte-sistema", async (DateOnly fecha, IGasTransporteXSistema servicio) =>
+        grupo.MapGet("/transporte-sistema", async (DateOnly fecha, IGasTransporteXSistemaService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
         
-        grupo.MapGet("/consumo-ciudad", async (DateOnly fecha, IGasConsumoXCiudad servicio) =>
+        grupo.MapGet("/consumo-ciudad", async (DateOnly fecha, IGasConsumoXCiudadService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
 
-        grupo.MapGet("/transportado-mensual", async (DateOnly fecha, IGasTransportadoMensual servicio) =>
+        grupo.MapGet("/transportado-mensual", async (DateOnly fecha, IGasTransportadoMensualService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });

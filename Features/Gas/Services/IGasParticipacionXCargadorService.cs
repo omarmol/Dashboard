@@ -2,7 +2,7 @@
 
 namespace Dashboard.Features.Gas.Services;
 
-public interface IGasParticipacionXCargador
+public interface IGasParticipacionXCargadorService
 {
     // Task<IEnumerable<object>> ObtenerTodosAsync();
     Task<object> ObtenerPorFechaAsync(DateOnly fecha);
