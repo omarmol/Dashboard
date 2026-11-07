@@ -1,4 +1,7 @@
-using Dashboard.Endpoints;
+using Dashboard.Features.DataImport.Endpoints;
+using Dashboard.Features.Gas.Endpoints;
+using Dashboard.Features.Ole.Endpoints;
+using Dashboard.Features.Profiles.Endpoints;
 using Dashboard.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
