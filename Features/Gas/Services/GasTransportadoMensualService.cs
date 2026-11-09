@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using Dashboard.Features.Shared;
 //using ProductosApp.Models;
 
 namespace Dashboard.Features.Gas.Services;
@@ -9,8 +10,7 @@ public class GasTransportadoMensualService : IGasTransportadoMensualService
 
     public GasTransportadoMensualService(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
+        _connectionString = SqlDataAccess.GetRequiredConnectionString(configuration);
     }
 
     
@@ -48,9 +48,9 @@ public class GasTransportadoMensualService : IGasTransportadoMensualService
         {
             lista.Add(new
             {
-                campo = lector["campo"].ToString(),
-                dia = Convert.ToInt32(lector["dia"]),
-                ejecutado = lector["ejecutado"] == DBNull.Value ? 0 : Convert.ToDouble(lector["ejecutado"])
+                campo = lector.GetStringOrEmpty("campo"),
+                dia = lector.GetRequiredInt32("dia"),
+                ejecutado = lector.GetDoubleOrDefault("ejecutado", 0)
 
             });
             

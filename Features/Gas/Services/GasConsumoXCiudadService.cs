@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using Dashboard.Features.Shared;
 //using ProductosApp.Models;
 
 namespace Dashboard.Features.Gas.Services;
@@ -9,8 +10,7 @@ public class GasConsumoXCiudadService : IGasConsumoXCiudadService
 
     public GasConsumoXCiudadService(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
+        _connectionString = SqlDataAccess.GetRequiredConnectionString(configuration);
     }
 
     
@@ -39,8 +39,8 @@ public class GasConsumoXCiudadService : IGasConsumoXCiudadService
         {
             lista.Add(new
             {
-                name = Convert.ToString(lector["ciudad"]),
-                value = decimal.Round(Convert.ToDecimal(lector["ejecutado"]), 2)
+                name = lector.GetStringOrEmpty("ciudad"),
+                value = decimal.Round(lector.GetRequiredDecimal("ejecutado"), 2)
             });
             cantidad_datos = cantidad_datos + 1;
 

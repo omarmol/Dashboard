@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using Dashboard.Features.Shared;
 //using ProductosApp.Models;
 
 namespace Dashboard.Features.Gas.Services;
@@ -9,8 +10,7 @@ public class GasParticipacionXCargadorService : IGasParticipacionXCargadorServic
 
     public GasParticipacionXCargadorService(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
+        _connectionString = SqlDataAccess.GetRequiredConnectionString(configuration);
     }
 
     
@@ -44,8 +44,8 @@ public class GasParticipacionXCargadorService : IGasParticipacionXCargadorServic
         {
             lista.Add(new
             {
-                name = lector["cargador"].ToString(),
-                value = Convert.ToDouble(lector["ejecutado"])
+                name = lector.GetStringOrEmpty("cargador"),
+                value = lector.GetRequiredDouble("ejecutado")
             });
             cantidad_datos++;
         }

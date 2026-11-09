@@ -8,9 +8,16 @@ public static class DatosPerfilesEndpoints
     {
         var grupo = app.MapGroup("/api/perfil");
 
-        grupo.MapGet("/general", async (DateOnly fecha, String ducto, IPerfilesService servicio) =>
+        grupo.MapGet("/general", async Task<IResult> (DateOnly fecha, String ducto, IPerfilesService servicio) =>
         {
-            return Results.Ok(await servicio.ObtenerPorFechaYDuctoAsync(fecha, ducto));
+            try
+            {
+                return Results.Ok(await servicio.ObtenerPorFechaYDuctoAsync(fecha, ducto));
+            }
+            catch (ArgumentException ex) when (ex.ParamName == nameof(ducto))
+            {
+                return Results.BadRequest(new { mensaje = ex.Message });
+            }
         });
        
     }

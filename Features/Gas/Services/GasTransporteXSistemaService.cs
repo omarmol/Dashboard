@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using Dashboard.Features.Shared;
 //using ProductosApp.Models;
 
 namespace Dashboard.Features.Gas.Services;
@@ -9,8 +10,7 @@ public class GasTransporteXSistemaService : IGasTransporteXSistemaService
 
     public GasTransporteXSistemaService(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
+        _connectionString = SqlDataAccess.GetRequiredConnectionString(configuration);
     }
 
     
@@ -47,10 +47,10 @@ public class GasTransporteXSistemaService : IGasTransporteXSistemaService
 
         while (await lector.ReadAsync())
         {
-            sistema.Add(Convert.ToString(lector["sistema"]) ?? string.Empty);
-            programado.Add(Convert.ToDouble(lector["programado"]));
-            ejecutado.Add(Convert.ToDouble(lector["ejecutado"]));
-            hoy.Add(Convert.ToDouble(lector["hoy"]));
+            sistema.Add(lector.GetStringOrEmpty("sistema"));
+            programado.Add(lector.GetRequiredDouble("programado"));
+            ejecutado.Add(lector.GetRequiredDouble("ejecutado"));
+            hoy.Add(lector.GetRequiredDouble("hoy"));
             cantidad_datos = cantidad_datos + 1;
 
         }

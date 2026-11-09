@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Dashboard.Features.Ole.Models;
+using Dashboard.Features.Shared;
 
 namespace Dashboard.Features.Ole.Services;
 
@@ -9,8 +10,7 @@ public class OleMensualCisternasService : IOleMensualCisternasService
 
     public OleMensualCisternasService(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
+        _connectionString = SqlDataAccess.GetRequiredConnectionString(configuration);
     }
 
     
@@ -46,9 +46,9 @@ public class OleMensualCisternasService : IOleMensualCisternasService
         {
             lista.Add(new
             {
-                producto = lector["producto"].ToString(),
-                dia = Convert.ToInt32(lector["dia"]),
-                barriles = lector["barriles"] == DBNull.Value ? 0 : Convert.ToDouble(lector["barriles"])
+                producto = lector.GetStringOrEmpty("producto"),
+                dia = lector.GetRequiredInt32("dia"),
+                barriles = lector.GetDoubleOrDefault("barriles", 0)
 
             });
 

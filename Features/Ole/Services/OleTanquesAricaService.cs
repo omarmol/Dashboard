@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Dashboard.Features.Ole.Models;
+using Dashboard.Features.Shared;
 
 namespace Dashboard.Features.Ole.Services;
 
@@ -9,8 +10,7 @@ public class OleTanquesAricaService : IOleTanquesAricaService
 
     public OleTanquesAricaService(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
+        _connectionString = SqlDataAccess.GetRequiredConnectionString(configuration);
     }
 
     
@@ -44,11 +44,11 @@ public class OleTanquesAricaService : IOleTanquesAricaService
         {
             oleTanquesArica.Add(
                 new OleTanqueArica(
-                    Convert.ToString(lector["tanque"]) ?? string.Empty,
-                    Convert.ToString(lector["producto"]) ?? string.Empty,
-                    Convert.ToDouble(lector["esp_disp"]),
-                    Convert.ToDouble(lector["sal_alm"]),
-                    Convert.ToDouble(lector["agua_libre"])));
+                    lector.GetStringOrEmpty("tanque"),
+                    lector.GetStringOrEmpty("producto"),
+                    lector.GetRequiredDouble("esp_disp"),
+                    lector.GetRequiredDouble("sal_alm"),
+                    lector.GetRequiredDouble("agua_libre")));
             cantidad_tanques = cantidad_tanques + 1;
         }
 

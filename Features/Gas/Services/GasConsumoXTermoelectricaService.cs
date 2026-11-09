@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using Dashboard.Features.Shared;
 //using ProductosApp.Models;
 
 namespace Dashboard.Features.Gas.Services;
@@ -9,8 +10,7 @@ public class GasConsumoXTermoelectricaService : IGasConsumoXTermoelectricaServic
 
     public GasConsumoXTermoelectricaService(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
+        _connectionString = SqlDataAccess.GetRequiredConnectionString(configuration);
     }
 
     
@@ -37,8 +37,8 @@ public class GasConsumoXTermoelectricaService : IGasConsumoXTermoelectricaServic
         while (await lector.ReadAsync())
         {
             lista.Add(new {
-                name = lector.GetString(0).Trim(),
-                value = double.Round(lector.GetDouble(1), 2)
+                name = lector.GetRequiredString("termoelectrica").Trim(),
+                value = double.Round(lector.GetRequiredDouble("ejecutado"), 2)
             });
             cantidad_datos++;
         }
