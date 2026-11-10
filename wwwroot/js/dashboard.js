@@ -201,7 +201,7 @@
                 const mes_actual = document.getElementById('mes_actual');
                 const fechaActual = new Date();
                 const anio = fechaActual.getFullYear();
-                const mes = fechaActual.getMonth() -1;
+                const mes = fechaActual.getMonth();
                 const hoy = fechaActual.getDate();
 
                 
