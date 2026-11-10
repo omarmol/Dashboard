@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IGasEntregasPlantasService, GasEntregasPlantasService>();
         services.AddScoped<IGasEntregasDuctosService, GasEntregasDuctosService>();
+        services.AddScoped<IGasTransitoResumenService, GasTransitoResumenService>();
         services.AddScoped<IGasConsumoXTermoelectricaService, GasConsumoXTermoelectricaService>();
         services.AddScoped<IGasCapacidadService, GasCapacidadService>();
         services.AddScoped<IGasRecepcionesService, GasRecepcionesService>();

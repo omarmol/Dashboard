@@ -1,17 +1,99 @@
-using System.Data;
 using ClosedXML.Excel;
-using Microsoft.Data.SqlClient;
+using ClosedXML.Excel.Drawings;
 using Dashboard.Features.DataImport.Models;
+using Microsoft.Data.SqlClient;
 
 namespace Dashboard.Features.DataImport.Services;
 
 public class CargarExcelService : ICargarExcelService
 {
-    private static readonly string[] ExtensionesPermitidas = { ".xlsx", ".xls" };
+    // Cada destino se actualiza una sola vez; sus fuentes comparten una transacción.
+    // Para agregar una tabla Excel, configure aquí su destino y el mapeo de columnas.
+    // La columna fecha se agrega automáticamente. Las filas con campos obligatorios vacíos se omiten.
+    // Si una fuente no existe, no aporta filas; el destino igualmente se actualiza.
+    private static readonly ConfiguracionTabla[] Tablas =
+    [
+        new("ole_recepciones_crudo", [Fuente("ole_recepciones_crudo", ColumnasFlujo(conCargador: true))]),
+        new("ole_recepciones_glp", [Fuente("ole_recepciones_glp", ColumnasFlujo(conCargador: false))]),
+        new("ole_entregas_crudo", [Fuente("ole_entregas_crudo", ColumnasFlujo(conCargador: false))]),
+        new("ole_entregas_glp", [Fuente("ole_entregas_glp", ColumnasFlujo(conCargador: false))]),
+        new("ole_cisternas_arica",
+        [
+            Fuente("ole_cisternas_arica",
+            [
+                Entero("nro_cisternas", "Nro CISTERNAS"),
+                Texto("producto", "PRODUCTO"),
+                Numero("barriles", "Bbls."),
+                Numero("metros3", "m3")
+            ])
+        ]),
+        new("ole_tanques_arica",
+        [
+            Fuente("ole_tanques_arica",
+            [
+                Texto("tanque", "Tanque"),
+                Texto("producto", "Producto"),
+                Numero("esp_disp", "ESP. DISP."),
+                Numero("sal_alm", "SAL. ALM."),
+                Numero("agua_libre", "AGUA LIBRE")
+            ])
+        ]),
+        new("ole_capacidad", [Fuente("ole_capacidad", ColumnasCapacidad())]),
+        new("ole_barcos_arica",
+        [
+            Fuente("ole_barcos_arica",
+            [
+                Texto("barco", "Barco"),
+                Texto("producto", "Producto")
+            ])
+        ]),
+        new("gas_recepciones", [Fuente("gas_recepciones", ColumnasFlujo(conCargador: true))]),
+        new("gas_entregas_ductos", [Fuente("gas_entregas_ductos", ColumnasFlujo(conCargador: false))]),
+        new("gas_entregas_plantas", [Fuente("gas_entregas_plantas", ColumnasFlujo(conCargador: false))]),
+        new("gas_sistemas_transporte", [Fuente("gas_sistemas_transporte", ColumnasFlujoSistema())]),
+        new("gas_transferencias", [Fuente("gas_transferencias", ColumnasFlujoSistema())]),
+        new("gas_consumo_por_ciudad",
+        [
+            Fuente("gas_consumo_por_ciudad", [Texto("ciudad", "Ciudad"), Numero("ejecutado", "Ejecutado")])
+        ]),
+        new("gas_consumo_por_termoelectrica",
+        [
+            Fuente("gas_consumo_por_termoelectrica",
+                [Texto("termoelectrica", "Termoelectrica"), Numero("ejecutado", "Ejecutado")])
+        ]),
+        new("gas_capacidad", [Fuente("gas_capacidad", ColumnasCapacidad())]),
+        new("per_lotes",
+        [
+            Fuente("perfil_ossa1", ColumnasPerfil("OSSA-1")),
+            Fuente("perfil_pvt", ColumnasPerfil("PVT", "TJA", 175)),
+            Fuente("perfil_pcolpii", ColumnasPerfil("PCOLP-2", "EORU", 163))
+        ]),
+        new("imagenes",
+        [
+            FuenteImagenes(
+            [
+                ColumnaImagen("nombre_imagen", imagen => imagen.Name),
+                ColumnaImagen("imagen_base64", imagen =>
+                {
+                    using var stream = new MemoryStream();
+                    imagen.ImageStream.CopyTo(stream);
+                    return Convert.ToBase64String(stream.ToArray());
+                }),
+                ColumnaImagen("formato", imagen => imagen.Format switch
+                {
+                    XLPictureFormat.Jpeg => "image/jpeg",
+                    XLPictureFormat.Gif => "image/gif",
+                    _ => "image/png"
+                })
+            ])
+        ]),
+        new("leyendas", [])
+    ];
+
     private readonly ILogger<CargarExcelService> _log;
     private readonly string _connectionString;
 
-    public CargarExcelService(IConfiguration configuration,ILogger<CargarExcelService> log)
+    public CargarExcelService(IConfiguration configuration, ILogger<CargarExcelService> log)
     {
         _log = log;
         _connectionString = configuration.GetConnectionString("DefaultConnection")
@@ -21,10 +103,8 @@ public class CargarExcelService : ICargarExcelService
     public async Task<RespuestaCargaDatos<DatosRecepcion>> CargarExcelAsync(DateOnly? fecha, IFormFile? archivo)
     {
         string? rutaTemporal = null;
-        string nombreTabla;
         try
         {
-// 1. Validaciones básicas
             if (fecha is null)
                 return RespuestaCargaDatos<DatosRecepcion>.Error("Debe indicar una fecha.");
 
@@ -34,972 +114,280 @@ public class CargarExcelService : ICargarExcelService
             if (!Path.GetExtension(archivo.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
                 return RespuestaCargaDatos<DatosRecepcion>.Error("Solo se permiten archivos Excel (.xlsx).");
 
-            // 2. Guardar en carpeta temporal (con nombre propio, nunca el del usuario)
             rutaTemporal = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.xlsx");
             await using (var destino = File.Create(rutaTemporal))
             {
                 await archivo.CopyToAsync(destino);
             }
+
             _log.LogInformation("Archivo guardado temporalmente en {Ruta}", rutaTemporal);
 
-            await using (SqlConnection sqlDb = new SqlConnection(_connectionString))
+            using var workbook = new XLWorkbook(rutaTemporal);
+            var nombreHoja = fecha.Value.Day.ToString("D2");
+            if (!workbook.Worksheets.Contains(nombreHoja))
+                return RespuestaCargaDatos<DatosRecepcion>.Error(
+                    $"No existe la Hoja {nombreHoja} en el archivo {rutaTemporal}");
+
+            var hoja = workbook.Worksheet(nombreHoja);
+            var fechaProceso = fecha.Value.ToDateTime(TimeOnly.MinValue);
+            var tablasFallidas = new List<string>();
+
+            await using var sqlDb = new SqlConnection(_connectionString);
+            await sqlDb.OpenAsync();
+
+            foreach (var tabla in Tablas)
             {
-                sqlDb.Open();
-
-                // Limpiar todas las tablas
-                using (SqlCommand cmdLimpiar = new SqlCommand("DELETE FROM ole_recepciones_crudo WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM ole_recepciones_glp WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM ole_entregas_crudo WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM ole_entregas_glp WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM ole_cisternas_arica WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM ole_tanques_arica WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM ole_capacidad WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM ole_barcos_arica WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM gas_recepciones WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM gas_entregas_ductos WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM gas_entregas_plantas WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM gas_sistemas_transporte WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM gas_transferencias WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM gas_consumo_por_ciudad WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM gas_consumo_por_termoelectrica WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM gas_capacidad WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM leyendas WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM imagenes WHERE fecha = @fecha_proceso; " +
-                                            "DELETE FROM per_lotes WHERE fecha = @fecha_proceso; " +
-                                            "", sqlDb))
-                {
-                    cmdLimpiar.Parameters.AddWithValue("@fecha_proceso", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                    cmdLimpiar.ExecuteNonQuery();
-                }
-
-                string nombreHoja = FormatearDia(fecha.Value.Day);
-
-                // 2. Abrir el archivo Excel con ClosedXML
-                using (var workbook = new XLWorkbook(rutaTemporal))
-                {
-                    if (workbook.Worksheets.Contains(nombreHoja))
-                    {
-                        var wsHoja = workbook.Worksheet(nombreHoja);
-
-                        // tabla: ole_recepciones_crudo
-                        nombreTabla = "ole_recepciones_crudo";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Campo").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string cargador = "";
-                                        row.Field("Cargador").TryGetValue<string>(out cargador);
-
-                                        string campo = "";
-                                        row.Field("Campo").TryGetValue<string>(out campo);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO ole_recepciones_crudo (cargador, campo, programado, ejecutado, hoy, fecha) VALUES (@cargador, @campo, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@cargador", cargador);
-                                            cmdInsert.Parameters.AddWithValue("@campo", campo);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-
-                                }
-
-                                break;
-                            }
-                        }
-
-
-
-                        // tabla: ole_recepciones_glp
-                        nombreTabla = "ole_recepciones_glp";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Campo").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string campo = "";
-                                        row.Field("Campo").TryGetValue<string>(out campo);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO ole_recepciones_glp (cargador, campo, programado, ejecutado, hoy, fecha) VALUES (@cargador, @campo, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@cargador", "");
-                                            cmdInsert.Parameters.AddWithValue("@campo", campo);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: ole_entregas_crudo
-                        nombreTabla = "ole_entregas_crudo";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Campo").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string campo = "";
-                                        row.Field("Campo").TryGetValue<string>(out campo);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO ole_entregas_crudo (cargador, campo, programado, ejecutado, hoy, fecha) VALUES (@cargador, @campo, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@cargador", "");
-                                            cmdInsert.Parameters.AddWithValue("@campo", campo);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: ole_entregas_glp
-                        nombreTabla = "ole_entregas_glp";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Campo").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string campo = "";
-                                        row.Field("Campo").TryGetValue<string>(out campo);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO ole_entregas_glp (cargador, campo, programado, ejecutado, hoy, fecha) VALUES (@cargador, @campo, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@cargador", "");
-                                            cmdInsert.Parameters.AddWithValue("@campo", campo);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: ole_cisternas_arica
-                        nombreTabla = "ole_cisternas_arica";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Nro CISTERNAS").IsEmpty() && !row.Field("PRODUCTO").IsEmpty() && !row.Field("Bbls.").IsEmpty() && !row.Field("m3").IsEmpty())
-                                    {
-
-                                        int nro_cisternas = 0;
-                                        row.Field("Nro CISTERNAS").TryGetValue<int>(out nro_cisternas);
-
-                                        string producto = "";
-                                        row.Field("PRODUCTO").TryGetValue<string>(out producto);
-
-                                        double bbls = 0;
-                                        row.Field("Bbls.").TryGetValue<double>(out bbls);
-
-                                        double metros3 = 0;
-                                        row.Field("m3").TryGetValue<double>(out metros3);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO ole_cisternas_arica (nro_cisternas, producto, barriles, metros3, fecha) VALUES (@nro_cisternas, @producto, @barriles, @metros3, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@cargador", "");
-                                            cmdInsert.Parameters.AddWithValue("@nro_cisternas", nro_cisternas);
-                                            cmdInsert.Parameters.AddWithValue("@producto", producto);
-                                            cmdInsert.Parameters.AddWithValue("@barriles", bbls);
-                                            cmdInsert.Parameters.AddWithValue("@metros3", metros3);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: ole_tanques_arica
-                        nombreTabla = "ole_tanques_arica";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Tanque").IsEmpty() && !row.Field("Producto").IsEmpty() && !row.Field("ESP. DISP.").IsEmpty() && !row.Field("SAL. ALM.").IsEmpty() && !row.Field("AGUA LIBRE").IsEmpty())
-                                    {
-                                        string tanque = "";
-                                        row.Field("Tanque").TryGetValue<string>(out tanque);
-
-                                        string producto = "";
-                                        row.Field("Producto").TryGetValue<string>(out producto);
-
-                                        double esp_disp = 0;
-                                        row.Field("ESP. DISP.").TryGetValue<double>(out esp_disp);
-
-                                        double sal_alm = 0;
-                                        row.Field("SAL. ALM.").TryGetValue<double>(out sal_alm);
-
-                                        double agua_libre = 0;
-                                        row.Field("AGUA LIBRE").TryGetValue<double>(out agua_libre);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO ole_tanques_arica (tanque, producto, esp_disp, sal_alm, agua_libre, fecha) VALUES (@tanque, @producto, @esp_disp, @sal_alm, @agua_libre, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@tanque", tanque);
-                                            cmdInsert.Parameters.AddWithValue("@producto", producto);
-                                            cmdInsert.Parameters.AddWithValue("@esp_disp", esp_disp);
-                                            cmdInsert.Parameters.AddWithValue("@sal_alm", sal_alm);
-                                            cmdInsert.Parameters.AddWithValue("@agua_libre", agua_libre);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: ole_capacidad
-                        nombreTabla = "ole_capacidad";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Sistema").IsEmpty() && !row.Field("Capacidad").IsEmpty() && !row.Field("% Uso x Dia").IsEmpty())
-                                    {
-                                        string sistema = "";
-                                        row.Field("Sistema").TryGetValue<string>(out sistema);
-
-                                        double capacidad = 0;
-                                        row.Field("Capacidad").TryGetValue<double>(out capacidad);
-
-                                        double porcentaje_uso = 0;
-                                        row.Field("% Uso x Dia").TryGetValue<double>(out porcentaje_uso);
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO ole_capacidad (sistema, capacidad, porcentaje_uso, fecha) VALUES (@sistema, @capacidad, @porcentaje_uso, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@sistema", sistema);
-                                            cmdInsert.Parameters.AddWithValue("@capacidad", capacidad);
-                                            cmdInsert.Parameters.AddWithValue("@porcentaje_uso", porcentaje_uso);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: ole_barcos_arica
-                        nombreTabla = "ole_barcos_arica";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Barco").IsEmpty() && !row.Field("Producto").IsEmpty())
-                                    {
-                                        string barco = "";
-                                        row.Field("Barco").TryGetValue<string>(out barco);
-
-                                        string producto = "";
-                                        row.Field("Producto").TryGetValue<string>(out producto);
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO ole_barcos_arica (barco, producto, fecha) VALUES (@barco, @producto, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@barco", barco);
-                                            cmdInsert.Parameters.AddWithValue("@producto", producto);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-
-                        // tabla: gas_recepciones
-                        nombreTabla = "gas_recepciones";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Campo").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string cargador = "";
-                                        row.Field("Cargador").TryGetValue<string>(out cargador);
-
-                                        string campo = "";
-                                        row.Field("Campo").TryGetValue<string>(out campo);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO gas_recepciones (cargador, campo, programado, ejecutado, hoy, fecha) VALUES (@cargador, @campo, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@cargador", cargador);
-                                            cmdInsert.Parameters.AddWithValue("@campo", campo);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-
-                                }
-
-                                break;
-                            }
-                        }
-
-
-                        // tabla: gas_entregas_ductos
-                        nombreTabla = "gas_entregas_ductos";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Campo").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string campo = "";
-                                        row.Field("Campo").TryGetValue<string>(out campo);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO gas_entregas_ductos (cargador, campo, programado, ejecutado, hoy, fecha) VALUES (@cargador, @campo, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@cargador", "");
-                                            cmdInsert.Parameters.AddWithValue("@campo", campo);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: gas_entregas_plantas
-                        nombreTabla = "gas_entregas_plantas";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Campo").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string campo = "";
-                                        row.Field("Campo").TryGetValue<string>(out campo);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO gas_entregas_plantas (cargador, campo, programado, ejecutado, hoy, fecha) VALUES (@cargador, @campo, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@cargador", "");
-                                            cmdInsert.Parameters.AddWithValue("@campo", campo);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: gas_sistemas_transporte
-                        nombreTabla = "gas_sistemas_transporte";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Sistema").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string sistema = "";
-                                        row.Field("Sistema").TryGetValue<string>(out sistema);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO gas_sistemas_transporte (sistema, programado, ejecutado, hoy, fecha) VALUES (@sistema, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@sistema", sistema);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: gas_transferencias
-                        nombreTabla = "gas_transferencias";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Sistema").IsEmpty() && !row.Field("Programado").IsEmpty() && !row.Field("Ejecutado").IsEmpty() && !row.Field("Hoy").IsEmpty())
-                                    {
-
-                                        string sistema = "";
-                                        row.Field("Sistema").TryGetValue<string>(out sistema);
-
-                                        double programado = 0;
-                                        row.Field("Programado").TryGetValue<double>(out programado);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        double hoy = 0;
-                                        row.Field("Hoy").TryGetValue<double>(out hoy);
-
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO gas_transferencias (sistema, programado, ejecutado, hoy, fecha) VALUES (@sistema, @programado, @ejecutado, @hoy, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@sistema", sistema);
-                                            cmdInsert.Parameters.AddWithValue("@programado", programado);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@hoy", hoy);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: gas_consumo_por_ciudad
-                        nombreTabla = "gas_consumo_por_ciudad";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Ciudad").IsEmpty() && !row.Field("Ejecutado").IsEmpty())
-                                    {
-
-                                        string ciudad = "";
-                                        row.Field("Ciudad").TryGetValue<string>(out ciudad);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO gas_consumo_por_ciudad (ciudad, ejecutado, fecha) VALUES (@ciudad, @ejecutado, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@ciudad", ciudad);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: gas_consumo_por_termoelectrica
-                        nombreTabla = "gas_consumo_por_termoelectrica";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Termoelectrica").IsEmpty() && !row.Field("Ejecutado").IsEmpty())
-                                    {
-
-                                        string termoelectrica = "";
-                                        row.Field("Termoelectrica").TryGetValue<string>(out termoelectrica);
-
-                                        double ejecutado = 0;
-                                        row.Field("Ejecutado").TryGetValue<double>(out ejecutado);
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO gas_consumo_por_termoelectrica (termoelectrica, ejecutado, fecha) VALUES (@termoelectrica, @ejecutado, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@termoelectrica", termoelectrica);
-                                            cmdInsert.Parameters.AddWithValue("@ejecutado", ejecutado);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: gas_capacidad
-                        nombreTabla = "gas_capacidad";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Sistema").IsEmpty() && !row.Field("Capacidad").IsEmpty() && !row.Field("% Uso x Dia").IsEmpty())
-                                    {
-                                        string sistema = "";
-                                        row.Field("Sistema").TryGetValue<string>(out sistema);
-
-                                        double capacidad = 0;
-                                        row.Field("Capacidad").TryGetValue<double>(out capacidad);
-
-                                        double porcentaje_uso = 0;
-                                        row.Field("% Uso x Dia").TryGetValue<double>(out porcentaje_uso);
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO gas_capacidad (sistema, capacidad, porcentaje_uso, fecha) VALUES (@sistema, @capacidad, @porcentaje_uso, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@sistema", sistema);
-                                            cmdInsert.Parameters.AddWithValue("@capacidad", capacidad);
-                                            cmdInsert.Parameters.AddWithValue("@porcentaje_uso", porcentaje_uso);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        // tabla: perfil_ossa1
-                        nombreTabla = "perfil_ossa1";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Lote").IsEmpty() && !row.Field("Producto").IsEmpty() && !row.Field("Posicion").IsEmpty())
-                                    {
-                                        string lote = "";
-                                        row.Field("Lote").TryGetValue<string>(out lote);
-
-                                        string producto = "";
-                                        row.Field("Producto").TryGetValue<string>(out producto);
-
-                                        double volumen = 0;
-                                        row.Field("Volumen").TryGetValue<double>(out volumen);
-
-                                        double posicion = 0;
-                                        row.Field("Posicion").TryGetValue<double>(out posicion);
-
-                                        posicion = Math.Round(posicion, 0);
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO per_lotes (ducto, lote, producto, volumen, posicion, fecha) VALUES (@ducto, @lote, @producto, @volumen, @posicion, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@ducto", "OSSA-1");
-                                            cmdInsert.Parameters.AddWithValue("@lote", lote);
-                                            cmdInsert.Parameters.AddWithValue("@producto", producto);
-                                            cmdInsert.Parameters.AddWithValue("@volumen", volumen);
-                                            cmdInsert.Parameters.AddWithValue("@posicion", posicion);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        nombreTabla = "perfil_pvt";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Lote").IsEmpty() && !row.Field("Producto").IsEmpty() && !row.Field("Posicion").IsEmpty())
-                                    {
-                                        string lote = "";
-                                        row.Field("Lote").TryGetValue<string>(out lote);
-
-                                        string producto = "";
-                                        row.Field("Producto").TryGetValue<string>(out producto);
-
-                                        double volumen = 0;
-                                        row.Field("Volumen").TryGetValue<double>(out volumen);
-
-                                        string strPosicion = "";
-                                        double posicion = 0;
-                                        row.Field("Posicion").TryGetValue<string>(out strPosicion);
-
-                                        if (!double.TryParse(strPosicion, out posicion)){
-                                            switch (strPosicion.ToUpper())
-                                            {
-                                                case "TJA":
-                                                    posicion = 175;
-                                                    break;
-                                                default:
-                                                    posicion = 0;
-                                                    break;
-                                            }
-                                        }
-                                        posicion = Math.Round(posicion, 0);
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO per_lotes (ducto, lote, producto, volumen, posicion, fecha) VALUES (@ducto, @lote, @producto, @volumen, @posicion, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@ducto", "PVT");
-                                            cmdInsert.Parameters.AddWithValue("@lote", lote);
-                                            cmdInsert.Parameters.AddWithValue("@producto", producto);
-                                            cmdInsert.Parameters.AddWithValue("@volumen", volumen);
-                                            cmdInsert.Parameters.AddWithValue("@posicion", posicion);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-                        nombreTabla = "perfil_pcolpii";
-                        foreach (var tablaDatos in wsHoja.Tables)
-                        {
-                            if (tablaDatos.Name.StartsWith(nombreTabla))
-                            {
-
-                                foreach (var row in tablaDatos.DataRange.Rows())
-                                {
-                                    // Accedemos a los campos por el nombre de la columna en la tabla
-
-                                    if (!row.Field("Lote").IsEmpty() && !row.Field("Producto").IsEmpty() && !row.Field("Posicion").IsEmpty())
-                                    {
-                                        string lote = "";
-                                        row.Field("Lote").TryGetValue<string>(out lote);
-
-                                        string producto = "";
-                                        row.Field("Producto").TryGetValue<string>(out producto);
-
-                                        double volumen = 0;
-                                        row.Field("Volumen").TryGetValue<double>(out volumen);
-
-                                        string strPosicion = "";
-                                        double posicion = 0;
-                                        row.Field("Posicion").TryGetValue<string>(out strPosicion);
-
-                                        if (!double.TryParse(strPosicion, out posicion))
-                                        {
-                                            switch (strPosicion.ToUpper())
-                                            {
-                                                case "EORU":
-                                                    posicion = 163;
-                                                    break;
-                                                default:
-                                                    posicion = 0;
-                                                    break;
-                                            }
-                                        }
-                                        posicion = Math.Round(posicion, 0);
-
-                                        using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO per_lotes (ducto, lote, producto, volumen, posicion, fecha) VALUES (@ducto, @lote, @producto, @volumen, @posicion, @fecha)", sqlDb))
-                                        {
-                                            cmdInsert.Parameters.AddWithValue("@ducto", "PCOLP-2");
-                                            cmdInsert.Parameters.AddWithValue("@lote", lote);
-                                            cmdInsert.Parameters.AddWithValue("@producto", producto);
-                                            cmdInsert.Parameters.AddWithValue("@volumen", volumen);
-                                            cmdInsert.Parameters.AddWithValue("@posicion", posicion);
-                                            cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                            cmdInsert.ExecuteNonQuery();
-                                        }
-
-                                    }
-                                }
-
-                                break;
-                            }
-                        }
-
-
-                        if (wsHoja.Pictures.Any())
-                        {
-                            //string nombre_imagen = "img_oleaje";
-
-                            foreach (var picture in wsHoja.Pictures)
-                            {
-
-                                using (var ms = new System.IO.MemoryStream())
-                                {
-                                    // Copiamos el stream de la imagen de ClosedXML
-                                    picture.ImageStream.CopyTo(ms);
-                                    byte[] imageBytes = ms.ToArray();
-                                    string base64String = Convert.ToBase64String(imageBytes);
-
-                                    // Determinamos el tipo MIME adecuado
-                                    string mimeType = "image/png";
-                                    if (picture.Format == ClosedXML.Excel.Drawings.XLPictureFormat.Jpeg)
-                                    {
-                                        mimeType = "image/jpeg";
-                                    }
-                                    else if (picture.Format == ClosedXML.Excel.Drawings.XLPictureFormat.Gif)
-                                    {
-                                        mimeType = "image/gif";
-                                    }
-
-                                    // Insertamos la imagen procesada en SQL Server
-                                    using (SqlCommand cmdInsert = new SqlCommand("INSERT INTO imagenes (nombre_imagen, imagen_base64, formato, fecha) VALUES (@nombre_imagen, @imagen_base64, @formato, @fecha)", sqlDb))
-                                    {
-                                        cmdInsert.Parameters.AddWithValue("@nombre_imagen", picture.Name);
-                                        cmdInsert.Parameters.AddWithValue("@imagen_base64", base64String);
-                                        cmdInsert.Parameters.AddWithValue("@formato", mimeType);
-                                        cmdInsert.Parameters.AddWithValue("@fecha", fecha.Value.ToDateTime(TimeOnly.MinValue));
-                                        cmdInsert.ExecuteNonQuery();
-                                    }
-                                }
-                                break;
-                            }
-
-                        }
-
-
-                    }
-                    else
-                    {
-                        //return Task.FromResult(RespuestaCargaDatos<DatosRecepcion>.Error("Debe adjuntar un archivo con contenido."));
-                        return RespuestaCargaDatos<DatosRecepcion>.Error("No existe la Hoja {nombreHoja} en el archivo {rutaTemporal}");
-                        //context.Response.Write($"{{\"success\": false, \"message\": \"No existe la Hoja {nombreHoja} en el archivo {rutaTemporal} \"}}");
-                    }
-                    
-                }
-
+                ActualizarTabla(sqlDb, hoja, fechaProceso, tabla, tablasFallidas);
+            }
+
+            if (tablasFallidas.Count > 0)
+            {
+                return RespuestaCargaDatos<DatosRecepcion>.Error(
+                    $"No se pudieron actualizar las tablas: {string.Join(", ", tablasFallidas)}. Las demás tablas se procesaron.");
             }
 
             var datos = new DatosRecepcion(archivo.FileName, archivo.Length, fecha.Value);
             return RespuestaCargaDatos<DatosRecepcion>.Ok(datos, "Archivo recibido correctamente.");
-
         }
         catch (Exception ex)
         {
-            // Error inesperado: se registra el detalle y al cliente se le envía un mensaje genérico
             _log.LogError(ex, "Error inesperado al recibir el archivo");
             return RespuestaCargaDatos<DatosRecepcion>.Error("Error: " + ex.Message);
         }
+        finally
+        {
+            if (rutaTemporal is not null)
+            {
+                try
+                {
+                    File.Delete(rutaTemporal);
+                }
+                catch (Exception ex)
+                {
+                    _log.LogWarning(ex, "No se pudo eliminar el archivo temporal {Ruta}", rutaTemporal);
+                }
+            }
+        }
     }
 
-    private string FormatearDia(int dia)
+    private void ActualizarTabla(
+        SqlConnection connection,
+        IXLWorksheet hoja,
+        DateTime fecha,
+        ConfiguracionTabla tabla,
+        List<string> tablasFallidas)
     {
-        return dia.ToString("D2");
+        SqlTransaction? transaction = null;
+        try
+        {
+            ValidarConfiguracion(tabla);
+            transaction = connection.BeginTransaction();
+            using (var delete = new SqlCommand(
+                $"DELETE FROM {Identificador(tabla.Destino)} WHERE [fecha] = @fecha", connection, transaction))
+            {
+                delete.Parameters.AddWithValue("@fecha", fecha);
+                delete.ExecuteNonQuery();
+            }
+
+            var filas = LeerFilas(hoja, tabla);
+            if (tabla.Fuentes.Length > 0)
+            {
+                var columnas = tabla.Fuentes[0].Columnas;
+                var nombres = string.Join(", ", columnas.Select(columna => Identificador(columna.Destino)));
+                var parametros = string.Join(", ", columnas.Select((_, indice) => $"@p{indice}"));
+                var sqlInsert = $"INSERT INTO {Identificador(tabla.Destino)} ({nombres}, [fecha]) VALUES ({parametros}, @fecha)";
+
+                foreach (var valores in filas)
+                {
+                    using var insert = new SqlCommand(sqlInsert, connection, transaction);
+                    for (var i = 0; i < valores.Length; i++)
+                        insert.Parameters.AddWithValue($"@p{i}", valores[i]);
+
+                    insert.Parameters.AddWithValue("@fecha", fecha);
+                    insert.ExecuteNonQuery();
+                }
+            }
+
+            transaction.Commit();
+            _log.LogInformation("Tabla {Tabla} actualizada para {Fecha}", tabla.Destino, fecha);
+        }
+        catch (Exception ex)
+        {
+            if (transaction is not null)
+            {
+                try
+                {
+                    transaction.Rollback();
+                }
+                catch (Exception rollbackException)
+                {
+                    _log.LogError(rollbackException, "No se pudo revertir la transacción de {Tabla}", tabla.Destino);
+                }
+            }
+
+            _log.LogError(ex, "No se pudo actualizar la tabla {Tabla} para {Fecha}", tabla.Destino, fecha);
+            tablasFallidas.Add(tabla.Destino);
+        }
+        finally
+        {
+            transaction?.Dispose();
+        }
     }
+
+    private static List<object[]> LeerFilas(IXLWorksheet hoja, ConfiguracionTabla configuracion)
+    {
+        var resultado = new List<object[]>();
+        foreach (var fuente in configuracion.Fuentes)
+        {
+            if (fuente.EsImagen)
+            {
+                var imagen = hoja.Pictures.FirstOrDefault();
+                if (imagen is not null)
+                    resultado.Add(fuente.Columnas.Select(columna => columna.Leer(null, imagen)).ToArray());
+
+                continue;
+            }
+
+            var tabla = hoja.Tables.FirstOrDefault(
+                item => item.Name.StartsWith(fuente.NombreExcel!, StringComparison.Ordinal));
+            if (tabla is null)
+                continue;
+
+            foreach (var fila in tabla.DataRange.Rows())
+            {
+                if (fuente.Columnas.Any(columna =>
+                    columna.Obligatoria && fila.Field(columna.NombreExcel!).IsEmpty()))
+                    continue;
+
+                resultado.Add(fuente.Columnas.Select(columna => columna.Leer(fila, null)).ToArray());
+            }
+        }
+
+        return resultado;
+    }
+
+    private static void ValidarConfiguracion(ConfiguracionTabla tabla)
+    {
+        if (string.IsNullOrWhiteSpace(tabla.Destino))
+            throw new InvalidOperationException("El destino de la tabla no puede estar vacío.");
+
+        if (tabla.Fuentes.Length == 0)
+            return;
+
+        var nombres = tabla.Fuentes[0].Columnas.Select(columna => columna.Destino).ToArray();
+        if (nombres.Length == 0
+            || nombres.Any(string.IsNullOrWhiteSpace)
+            || nombres.Contains("fecha", StringComparer.OrdinalIgnoreCase)
+            || nombres.Distinct(StringComparer.OrdinalIgnoreCase).Count() != nombres.Length)
+            throw new InvalidOperationException($"Las columnas de {tabla.Destino} no son válidas.");
+
+        foreach (var fuente in tabla.Fuentes)
+        {
+            if ((!fuente.EsImagen && string.IsNullOrWhiteSpace(fuente.NombreExcel))
+                || !fuente.Columnas.Select(columna => columna.Destino).SequenceEqual(nombres, StringComparer.OrdinalIgnoreCase))
+                throw new InvalidOperationException($"Las fuentes de {tabla.Destino} deben tener las mismas columnas de destino y en el mismo orden.");
+        }
+    }
+
+    private static string Identificador(string nombre) => $"[{nombre.Replace("]", "]]")}]";
+
+    private static ConfiguracionFuente Fuente(string nombreExcel, ConfiguracionColumna[] columnas) =>
+        new(nombreExcel, false, columnas);
+
+    private static ConfiguracionFuente FuenteImagenes(ConfiguracionColumna[] columnas) =>
+        new(null, true, columnas);
+
+    private static ConfiguracionColumna Texto(string destino, string nombreExcel, bool obligatoria = true) =>
+        new(destino, nombreExcel, obligatoria, (fila, _) => LeerTexto(fila!, nombreExcel));
+
+    private static ConfiguracionColumna Entero(string destino, string nombreExcel, bool obligatoria = true) =>
+        new(destino, nombreExcel, obligatoria, (fila, _) => LeerNumero<int>(fila!, nombreExcel, obligatoria));
+
+    private static ConfiguracionColumna Numero(string destino, string nombreExcel, bool obligatoria = true) =>
+        new(destino, nombreExcel, obligatoria, (fila, _) => LeerNumero<double>(fila!, nombreExcel, obligatoria));
+
+    private static ConfiguracionColumna Constante(string destino, string valor) =>
+        new(destino, null, false, (_, _) => valor);
+
+    private static ConfiguracionColumna ColumnaImagen(string destino, Func<IXLPicture, string> leer) =>
+        new(destino, null, false, (_, imagen) => leer(imagen!));
+
+    private static ConfiguracionColumna Posicion(string? codigo, double valorCodigo) =>
+        new("posicion", "Posicion", true, (fila, _) =>
+        {
+            var celda = fila!.Field("Posicion");
+            if (celda.TryGetValue<double>(out var valor))
+                return Math.Round(valor, 0);
+
+            var texto = LeerTexto(fila, "Posicion");
+            if (codigo is not null && texto.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+                return valorCodigo;
+
+            throw new InvalidOperationException($"La posición '{texto}' no es válida en la celda {celda.Address}.");
+        });
+
+    private static ConfiguracionColumna[] ColumnasFlujo(bool conCargador) =>
+    [
+        conCargador ? Texto("cargador", "Cargador", obligatoria: false) : Constante("cargador", ""),
+        Texto("campo", "Campo"),
+        Numero("programado", "Programado"),
+        Numero("ejecutado", "Ejecutado"),
+        Numero("hoy", "Hoy")
+    ];
+
+    private static ConfiguracionColumna[] ColumnasFlujoSistema() =>
+    [
+        Texto("sistema", "Sistema"),
+        Numero("programado", "Programado"),
+        Numero("ejecutado", "Ejecutado"),
+        Numero("hoy", "Hoy")
+    ];
+
+    private static ConfiguracionColumna[] ColumnasCapacidad() =>
+    [
+        Texto("sistema", "Sistema"),
+        Numero("capacidad", "Capacidad"),
+        Numero("porcentaje_uso", "% Uso x Dia")
+    ];
+
+    private static ConfiguracionColumna[] ColumnasPerfil(string ducto, string? codigo = null, double valorCodigo = 0) =>
+    [
+        Constante("ducto", ducto),
+        Texto("lote", "Lote"),
+        Texto("producto", "Producto"),
+        Numero("volumen", "Volumen", obligatoria: false),
+        Posicion(codigo, valorCodigo)
+    ];
+
+    private static string LeerTexto(IXLTableRow fila, string columna)
+    {
+        var celda = fila.Field(columna);
+        if (celda.IsEmpty())
+            return string.Empty;
+
+        if (celda.TryGetValue<string>(out var valor))
+            return valor;
+
+        throw new InvalidOperationException($"El valor de la celda {celda.Address} de '{columna}' no es texto válido.");
+    }
+
+    private static T LeerNumero<T>(IXLTableRow fila, string columna, bool obligatoria) where T : struct
+    {
+        var celda = fila.Field(columna);
+        if (!obligatoria && celda.IsEmpty())
+            return default;
+
+        if (celda.TryGetValue<T>(out var valor))
+            return valor;
+
+        throw new InvalidOperationException($"El valor de la celda {celda.Address} de '{columna}' no es un número válido.");
+    }
+
+    private sealed record ConfiguracionTabla(string Destino, ConfiguracionFuente[] Fuentes);
+    private sealed record ConfiguracionFuente(string? NombreExcel, bool EsImagen, ConfiguracionColumna[] Columnas);
+    private sealed record ConfiguracionColumna(
+        string Destino,
+        string? NombreExcel,
+        bool Obligatoria,
+        Func<IXLTableRow?, IXLPicture?, object> Leer);
 }

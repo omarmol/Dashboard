@@ -17,6 +17,11 @@ public static class DatosGasEndpoints
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
 
+        grupo.MapGet("/transito-resumen", async (DateOnly fecha, IGasTransitoResumenService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
+
         grupo.MapGet("/consumo-termoelectricas", async (DateOnly fecha, IGasConsumoXTermoelectricaService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
