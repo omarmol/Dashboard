@@ -291,9 +291,9 @@
                     contenedorDias.appendChild(btn);
                 }
 
-                console.log(hoy);
-                console.log(mes);
-                console.log(anio);
+                // console.log(hoy);
+                // console.log(mes);
+                // console.log(anio);
 
                 titulo_dashboard.innerText = 'Reporte Diario ' + formatearFecha2(hoy);
                 mes_actual.innerText = nombreMes(mes + 1) + ' ' + anio;
@@ -419,13 +419,13 @@
 
                 //const imgElement = document.getElementById('imagenExcel');
                 //const lblSinImagen = document.getElementById('lblSinImagen');
-                console.log(dataImagen.formato);
-                console.log(objDOM);
+                // console.log(dataImagen.formato);
+                // console.log(objDOM);
                 //console.log(dataImagen.imagenBase);
 
                 if (dataImagen.imagen_base64) {
                     // Construimos la Data URI con el formato y la cadena Base64
-                    console.log('ingresa');
+                    //console.log('ingresa');
                     objDOM.src = `data:${dataImagen.formato};base64,${dataImagen.imagen_base64}`;
                     objDOM.style.display = 'block';
                 } else {
@@ -600,6 +600,163 @@
 
         }
 
+        async function CargarGasTransitoResumen(nombreDOM, tema, titulo, subTitulo, unidadMedida, fechaStr) {
+
+            try {
+                let objDOM = document.getElementById(nombreDOM);
+                let eChart = echarts.init(objDOM, tema);
+                eChart.showLoading();
+
+                let res = await fetch('api/gas/transito-resumen?fecha=' + fechaStr + '');
+                let dataOriginal = await res.json();
+
+                console.log("Data original: ", dataOriginal);
+
+                if (dataOriginal.cantidad_datos > 0) {
+                    GraficarSankeyTransito(eChart, dataOriginal, titulo, subTitulo, unidadMedida);
+                } else {
+                    GraficarSinDatos(eChart, titulo, subTitulo);
+                }
+
+                eChart.hideLoading();
+                CHARTS.push(eChart);
+
+            }
+            catch (error) {
+                console.error("Ocurrió un error: ", error);
+                alert("Ocurrió un error: " + error);
+            }
+
+        }
+
+        function GraficarSankeyTransito(objetoEcharts, data, titulo, subTitulo, unidadMedida) {
+
+            try {
+                const COLOR_AR = '#2563eb', COLOR_BR = '#1b9a6c';
+                const claves = [
+                    { k: 'programado', txt: 'Programado' },
+                    { k: 'ejecutado', txt: 'Ejecutado' },
+                    { k: 'hoy', txt: 'Programado Hoy' }
+                ];
+                let claveActiva = 'ejecutado';
+
+                const fmt = n => n.toLocaleString('es-BO', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + ' ' + unidadMedida;
+                const grad = (a, b) => new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                    { offset: 0, color: a }, { offset: 1, color: b }]);
+                // Bandera de Bolivia en el nodo central
+                const banderaBolivia = new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 0, color: '#d52b1e' }, { offset: 0.33, color: '#d52b1e' },
+                    { offset: 0.33, color: '#f9e300' }, { offset: 0.66, color: '#f9e300' },
+                    { offset: 0.66, color: '#007934' }, { offset: 1, color: '#007934' }
+                ]);
+
+                // Suma por proveedor y por cliente conservando el orden de aparición
+                const agrupa = (nombres, valores) => {
+                    const mapa = new Map();
+                    nombres.forEach((n, i) => mapa.set(n, (mapa.get(n) || 0) + (valores[i] || 0)));
+                    return mapa;
+                };
+
+                const construye = clave => {
+                    const ar = agrupa(data.proveedor, data[clave]);
+                    const br = agrupa(data.cliente, data[clave]);
+
+                    const lbl = (pos, align) => ({
+                        position: pos, align: align,
+                        formatter: p => '{n|' + p.data.etiqueta + '}\n{v|' + fmt(p.value) + '}',
+                        rich: {
+                            n: { fontWeight: 'bold', fontSize: 11, lineHeight: 15 },
+                            v: { fontSize: 11, lineHeight: 15, opacity: 0.7 }
+                        }
+                    });
+
+                    const nodes = [
+                        ...[...ar.keys()].map(n => ({ name: 'ar|' + n, etiqueta: n, depth: 0, itemStyle: { color: COLOR_AR }, label: lbl('left', 'right') })),
+                        {
+                            name: 'BOLIVIA', etiqueta: 'BOLIVIA', depth: 1,
+                            itemStyle: { color: banderaBolivia, borderColor: '#1e293b', borderWidth: 1 },
+                            label: {
+                                position: 'top', align: 'center', distance: 6,
+                                formatter: p => '{c|BOLIVIA}\n{c|' + fmt(p.value) + '}',
+                                rich: { c: { fontWeight: 'bold', fontSize: 11, lineHeight: 14 } }
+                            }
+                        },
+                        ...[...br.keys()].map(n => ({ name: 'br|' + n, etiqueta: n, depth: 2, itemStyle: { color: COLOR_BR }, label: lbl('right', 'left') }))
+                    ];
+
+                    const links = [
+                        ...[...ar].map(([n, v]) => ({ source: 'ar|' + n, target: 'BOLIVIA', value: v, lineStyle: { color: grad('#b4c6f6', '#a9b5c4') } })),
+                        ...[...br].map(([n, v]) => ({ source: 'BOLIVIA', target: 'br|' + n, value: v, lineStyle: { color: grad('#a9b6bd', '#b1d9ca') } }))
+                    ];
+                    return { nodes, links };
+                };
+
+                const botones = () => claves.map((c, i) => ({
+                    type: 'group',
+                    right: 20 + (claves.length - 1 - i) * 112,
+                    top: 12,
+                    onclick: () => dibuja(c.k),
+                    children: [
+                        {
+                            type: 'rect', shape: { width: 104, height: 26, r: 8 },
+                            style: {
+                                fill: c.k === claveActiva ? '#2563eb' : 'rgba(0,0,0,0)',
+                                stroke: c.k === claveActiva ? '#2563eb' : '#94a3b8'
+                            }
+                        },
+                        {
+                            type: 'text', left: 'center', top: 6,
+                            style: {
+                                text: c.txt, fontSize: 11, fontWeight: 'bold',
+                                fill: c.k === claveActiva ? '#fff' : '#64748b'
+                            }
+                        }
+                    ]
+                }));
+
+                const paises = () => [['ARGENTINA', '10%'], ['BOLIVIA', '50%'], ['BRASIL', '90%']].map(([txt, x]) => ({
+                    type: 'text', left: x, top: 56,
+                    style: { text: txt, fontSize: 11, fontWeight: 'bold', fill: '#64748b', textAlign: 'center' }
+                }));
+
+                const dibuja = clave => {
+                    claveActiva = clave;
+                    const { nodes, links } = construye(clave);
+                    objetoEcharts.setOption({
+                        animationDuration: 500,
+                        title: { text: titulo, subtext: subTitulo, left: 'left' },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: p => p.dataType === 'edge'
+                                ? p.data.source.replace(/^(ar|br)\|/, '') + ' → ' + p.data.target.replace(/^(ar|br)\|/, '') + '<br/><b>' + fmt(p.data.value) + '</b>'
+                                : '<b>' + p.data.etiqueta + '</b><br/>' + fmt(p.value)
+                        },
+                        graphic: [...botones(), ...paises()],
+                        series: [{
+                            type: 'sankey',
+                            left: 230, right: 230, top: 90, bottom: 20,
+                            nodeWidth: 16,
+                            nodeGap: 12,
+                            layoutIterations: 0,
+                            draggable: false,
+                            nodeAlign: 'justify',
+                            emphasis: { focus: 'adjacency' },
+                            lineStyle: { curveness: 0.5, opacity: 1 },
+                            data: nodes,
+                            links: links
+                        }]
+                    }, true);
+                };
+
+                dibuja(claveActiva);
+
+            }
+            catch (error) {
+                console.error("Ocurrió un error: ", error);
+                alert("Ocurrió un error: " + error);
+            }
+        }
+
         async function CargarGasUsoDiario(nombreDOM, tema, titulo, subTitulo, unidadMedida, fechaStr) {
 
             try {
@@ -715,7 +872,7 @@
                 let res = await fetch('api/gas/participacion-cargador?fecha=' + fechaStr + '');
                 let dataOriginal = await res.json();
 
-                console.log(dataOriginal);
+                //console.log(dataOriginal);
 
                 if (dataOriginal.cantidad_datos > 0) {
                     GraficarTorta(eChart, dataOriginal.lista, titulo, subTitulo, unidadMedida)
@@ -1668,6 +1825,11 @@
                 TEMA_DASHBOARD,
                 'Exportación / Mercado Interno',
                 'Por Mercado', 'MMpc', fechaStr);
+
+            CargarGasTransitoResumen('chartGasTransitoResumen',
+                TEMA_DASHBOARD,
+                'Flujo Argentina → Bolivia → Brasil',
+                'Ancho del flujo proporcional al volumen', 'MMmcd', fechaStr);
 
             CargarGasUsoDiario('chartGasCapacidad',
                 TEMA_DASHBOARD,

@@ -489,6 +489,7 @@
         }
 
         #resultado {
+            white-space: pre-line;
             margin-top: 22px;
             min-height: 56px;
             padding: 14px 16px;

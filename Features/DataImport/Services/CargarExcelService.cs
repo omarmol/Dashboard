@@ -50,6 +50,19 @@ public class CargarExcelService : ICargarExcelService
         new("gas_recepciones", [Fuente("gas_recepciones", ColumnasFlujo(conCargador: true))]),
         new("gas_entregas_ductos", [Fuente("gas_entregas_ductos", ColumnasFlujo(conCargador: false))]),
         new("gas_entregas_plantas", [Fuente("gas_entregas_plantas", ColumnasFlujo(conCargador: false))]),
+        new("gas_transito_resumen",
+        [
+            Fuente("gas_transito_resumen",
+            [
+                Texto("proveedor", "Proveedor"),
+                Texto("cliente", "Cliente"),
+                Numero("programado", "Programado"),
+                Numero("porcentaje_participacion", "% Participación", obligatoria: false),
+                Numero("ejecutado", "Ejecutado"),
+                Numero("hoy", "Hoy"),
+                Numero("entrega_mutun", "Entrega en Mutun", obligatoria: false)
+            ])
+        ]),
         new("gas_sistemas_transporte", [Fuente("gas_sistemas_transporte", ColumnasFlujoSistema())]),
         new("gas_transferencias", [Fuente("gas_transferencias", ColumnasFlujoSistema())]),
         new("gas_consumo_por_ciudad",
@@ -143,7 +156,9 @@ public class CargarExcelService : ICargarExcelService
             if (tablasFallidas.Count > 0)
             {
                 return RespuestaCargaDatos<DatosRecepcion>.Error(
-                    $"No se pudieron actualizar las tablas: {string.Join(", ", tablasFallidas)}. Las demás tablas se procesaron.");
+                    $"No se pudieron actualizar las tablas:{Environment.NewLine}" +
+                    $"{string.Join(Environment.NewLine, tablasFallidas)}{Environment.NewLine}" +
+                    "Las demás tablas se procesaron.");
             }
 
             var datos = new DatosRecepcion(archivo.FileName, archivo.Length, fecha.Value);
@@ -213,6 +228,7 @@ public class CargarExcelService : ICargarExcelService
         }
         catch (Exception ex)
         {
+            var detalle = UnaLinea(ex.Message);
             if (transaction is not null)
             {
                 try
@@ -222,17 +238,21 @@ public class CargarExcelService : ICargarExcelService
                 catch (Exception rollbackException)
                 {
                     _log.LogError(rollbackException, "No se pudo revertir la transacción de {Tabla}", tabla.Destino);
+                    detalle += $" No se pudo revertir la transacción: {UnaLinea(rollbackException.Message)}";
                 }
             }
 
             _log.LogError(ex, "No se pudo actualizar la tabla {Tabla} para {Fecha}", tabla.Destino, fecha);
-            tablasFallidas.Add(tabla.Destino);
+            tablasFallidas.Add($"{tabla.Destino}: {detalle}");
         }
         finally
         {
             transaction?.Dispose();
         }
     }
+
+    private static string UnaLinea(string mensaje) =>
+        string.Join(" ", mensaje.Split(["\r\n", "\r", "\n"], StringSplitOptions.RemoveEmptyEntries));
 
     private static List<object[]> LeerFilas(IXLWorksheet hoja, ConfiguracionTabla configuracion)
     {

@@ -47,8 +47,8 @@ public class GasTransitoResumenService : IGasTransitoResumenService
 
         while (await lector.ReadAsync())
         {
-            proveedor.Add(lector.GetRequiredString("proveedor"));
-            cliente.Add(lector.GetRequiredString("cliente"));
+            proveedor.Add(lector.GetStringOrEmpty("proveedor"));
+            cliente.Add(lector.GetStringOrEmpty("cliente"));
             programado.Add(lector.GetRequiredDouble("programado"));
             porcentaje_participacion.Add(lector.GetRequiredDouble("porcentaje_participacion"));
             ejecutado.Add(lector.GetRequiredDouble("ejecutado"));
