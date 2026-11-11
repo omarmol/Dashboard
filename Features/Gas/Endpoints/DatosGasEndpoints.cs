@@ -56,5 +56,10 @@ public static class DatosGasEndpoints
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
+
+        grupo.MapGet("/transporte-empresa", async (DateOnly fecha, IGasTransporteXEmpresaService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
     }
 }

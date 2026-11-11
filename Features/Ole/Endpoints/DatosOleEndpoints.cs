@@ -22,6 +22,20 @@ public static class DatosOleEndpoints
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
+
+        grupo.MapGet("/capacidad", async (DateOnly fecha, IOleCapacidadService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
         
+        grupo.MapGet("/entregas-crudo", async (DateOnly fecha, IOleEntregasCrudoService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
+
+        grupo.MapGet("/entregas-glp", async (DateOnly fecha, IOleEntregasGlpService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
     }
 }

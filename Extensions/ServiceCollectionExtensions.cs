@@ -19,11 +19,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGasTransporteXSistemaService, GasTransporteXSistemaService>();
         services.AddScoped<IGasConsumoXCiudadService, GasConsumoXCiudadService>();
         services.AddScoped<IGasTransportadoMensualService, GasTransportadoMensualService>();
+        services.AddScoped<IGasTransporteXEmpresaService, GasTransporteXEmpresaService>();
         services.AddScoped<IPerfilesService, PerfilesService>();
         services.AddScoped<IOleTanquesAricaService, OleTanquesAricaService>();
         services.AddScoped<IOleCisternasAricaService, OleCisternasAricaService>();
         services.AddScoped<IOleMensualCisternasService, OleMensualCisternasService>();
         services.AddScoped<ICargarExcelService, CargarExcelService>();
+        services.AddScoped<IOleCapacidadService, OleCapacidadService>();
+        services.AddScoped<IOleEntregasCrudoService, OleEntregasCrudoService>();
+        services.AddScoped<IOleEntregasGlpService, OleEntregasGlpService>();
 
         return services;
     }
