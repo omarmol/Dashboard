@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOleCapacidadService, OleCapacidadService>();
         services.AddScoped<IOleEntregasCrudoService, OleEntregasCrudoService>();
         services.AddScoped<IOleEntregasGlpService, OleEntregasGlpService>();
+        services.AddScoped<IOleImagenOleajeService, OleImagenOleajeService>();
 
         return services;
     }

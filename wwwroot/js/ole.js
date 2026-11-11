@@ -3,7 +3,7 @@ async function CargarImagenOleaje(nombreDOM, fechaStr) {
     try {
         let objDOM = document.getElementById(nombreDOM);
 
-        const resImagen = await fetch('servicios/DatosImagenOleaje.ashx?fecha=' + fechaStr + '');
+        const resImagen = await fetch('api/ole/imagen-oleaje?fecha=' + fechaStr + '');
         const dataImagen = await resImagen.json();
 
         //const imgElement = document.getElementById('imagenExcel');

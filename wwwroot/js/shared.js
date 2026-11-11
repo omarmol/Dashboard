@@ -425,7 +425,7 @@
 
             // //CargarGasTransporteXSistema(fechaStr);
             // //imgOleaje
-            //CargarImagenOleaje('imgOleaje', fechaStr);
+            CargarImagenOleaje('imgOleaje', fechaStr);
 
 
             GRID_PRINCIPAL.on('resizestop', function () {
