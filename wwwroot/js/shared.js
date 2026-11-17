@@ -512,7 +512,7 @@
                 limpiarLayoutsObsoletos();
                 await restaurarLayout();
                 agregarBotonesEliminar();
-                document.querySelector(`#menuFlotante [data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-current', 'true');
+                //document.querySelector(`#menuFlotante [data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-current', 'true');
                 document.querySelector(`#selectorLayout [data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-pressed', 'true');
 
                 // Guardar automáticamente cada vez que el usuario mueva o cambie de tamaño
