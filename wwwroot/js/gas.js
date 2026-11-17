@@ -207,7 +207,7 @@ async function CargarGasTransitoResumen(nombreDOM, tema, titulo, subTitulo, unid
         let res = await fetch('api/gas/transito-resumen?fecha=' + fechaStr + '');
         let dataOriginal = await res.json();
 
-        console.log("Data original: ", dataOriginal);
+        //console.log("Data original: ", dataOriginal);
 
         if (dataOriginal.cantidad_datos > 0) {
             GraficarSankeyTransito(eChart, dataOriginal, titulo, subTitulo, unidadMedida);

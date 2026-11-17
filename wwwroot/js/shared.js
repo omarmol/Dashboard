@@ -3,6 +3,10 @@
         let FECHA_DASHBOARD = '';
         let CHARTS = [];
         var TEMAS = {};
+        const LAYOUTS = ['default', 'gasoductos', 'oleoductos', 'poliductos', 'arica', 'perfil', 'comercial'];
+        const CLAVE_LAYOUT_ACTUAL = 'layoutActual';
+        const PREFIJO_LAYOUT = 'layoutGrid:';
+        let LAYOUT_ACTUAL = 'default';
 
 
         var chartGasRecepciones;
@@ -473,10 +477,6 @@
                 const item = boton.closest('.grid-stack-item');
                 if (!confirm('¿Desea eliminar este elemento del dashboard? Puede recuperarlo con Restaurar Apariencia.')) return;
 
-                const eliminados = obtenerWidgetsEliminados();
-                eliminados.add(item.getAttribute('gs-id'));
-                localStorage.setItem('widgetsEliminados', JSON.stringify([...eliminados]));
-
                 CHARTS = CHARTS.filter(function (chart) {
                     if (!item.contains(chart.getDom())) return true;
                     if (!chart.isDisposed()) chart.dispose();
@@ -486,22 +486,6 @@
                 guardarLayout();
             });
         }
-
-        function obtenerWidgetsEliminados() {
-            const json = localStorage.getItem('widgetsEliminados');
-            if (!json) return new Set();
-            try {
-                const ids = JSON.parse(json);
-                if (!Array.isArray(ids) || !ids.every(id => typeof id === 'string')) {
-                    throw new Error('La lista de elementos eliminados no es válida.');
-                }
-                return new Set(ids);
-            } catch (error) {
-                console.warn('Lista de elementos eliminados inválida', error);
-                return new Set();
-            }
-        }
-
 
         document.addEventListener("DOMContentLoaded", async function () {
 
@@ -516,13 +500,17 @@
 
             try {
 
-                // 1) Restaurar layout
-                restaurarLayout();
-                const eliminados = obtenerWidgetsEliminados();
-                document.querySelectorAll('#grid-principal > .grid-stack-item').forEach(function (item) {
-                    if (eliminados.has(item.getAttribute('gs-id'))) GRID_PRINCIPAL.removeWidget(item);
-                });
+                const seleccionado = localStorage.getItem(CLAVE_LAYOUT_ACTUAL) || 'default';
+                if (!LAYOUTS.includes(seleccionado)) {
+                    throw new Error('El layout seleccionado no es válido: ' + seleccionado);
+                }
+                LAYOUT_ACTUAL = seleccionado;
+                localStorage.removeItem('layoutGrid');
+                localStorage.removeItem('widgetsEliminados');
+                limpiarLayoutsObsoletos();
+                await restaurarLayout();
                 agregarBotonesEliminar();
+                document.querySelector(`[data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-current', 'true');
 
                 // Guardar automáticamente cada vez que el usuario mueva o cambie de tamaño
                 GRID_PRINCIPAL.on('change', function () {
@@ -530,29 +518,27 @@
                 });
 
 
-                Promise.all([
+                await Promise.all([
                     cargarTema('Bolivia', 'data/temas/bolivia.json'),
                     cargarTema('Santa Cruz', 'data/temas/santa-cruz.json'),
                     cargarTema('Default', 'data/temas/customized.json'),
                     cargarTema('Tema 2', 'data/temas/vintage.json'),
                     cargarTema('YPFBTR Claro', 'data/temas/ypfb-light.json'),
                     cargarTema('YPFBTR Oscuro', 'data/temas/ypfb-dark.json')
-                ]).then(function () {
+                ]);
 
-                    TEMA_DASHBOARD = localStorage.getItem('tema');
+                TEMA_DASHBOARD = localStorage.getItem('tema');
 
 
-                    if (TEMA_DASHBOARD == null || TEMAS[TEMA_DASHBOARD] == null) {
-                        TEMA_DASHBOARD = 'YPFBTR Claro';
-                        localStorage.setItem('tema', TEMA_DASHBOARD);
-                    }
+                if (TEMA_DASHBOARD == null || TEMAS[TEMA_DASHBOARD] == null) {
+                    TEMA_DASHBOARD = 'YPFBTR Claro';
+                    localStorage.setItem('tema', TEMA_DASHBOARD);
+                }
 
-                    //var inicial = Object.keys(temas)[0];   // o el tema guardado del usuario
-                    crearSelectorTemas('selectorTemas', TEMA_DASHBOARD);
-                    aplicarTema(TEMA_DASHBOARD);
-                    InicializarBarraDias();
-
-                });
+                //var inicial = Object.keys(temas)[0];   // o el tema guardado del usuario
+                crearSelectorTemas('selectorTemas', TEMA_DASHBOARD);
+                aplicarTema(TEMA_DASHBOARD);
+                InicializarBarraDias();
 
 
 
@@ -565,6 +551,8 @@
         });
 
         function restaurarApariencia() {
+            LAYOUTS.forEach(nombre => localStorage.removeItem(PREFIJO_LAYOUT + nombre));
+            localStorage.removeItem(CLAVE_LAYOUT_ACTUAL);
             localStorage.removeItem('layoutGrid');
             localStorage.removeItem('widgetsEliminados');
             localStorage.removeItem('tema')
@@ -575,18 +563,62 @@
         function guardarLayout() {
             // save(false) = solo posiciones/tamaños (sin contenido HTML)
             var layout = GRID_PRINCIPAL.save(false);
-            localStorage.setItem('layoutGrid', JSON.stringify(layout));
+            console.log(layout);
+            try {
+                localStorage.setItem(PREFIJO_LAYOUT + LAYOUT_ACTUAL, JSON.stringify(layout));
+            } catch (error) {
+                console.error('No se pudo guardar el layout:', error);
+                alert('No se pudo guardar el layout: ' + error);
+            }
         }
 
-        function restaurarLayout() {
-            var json = localStorage.getItem('layoutGrid');
-            if (!json) return;
+        async function restaurarLayout() {
+            const json = localStorage.getItem(PREFIJO_LAYOUT + LAYOUT_ACTUAL);
+            let layout;
+            if (json !== null) {
+                layout = JSON.parse(json);
+            } else {
+                const respuesta = await fetch('data/layouts/' + LAYOUT_ACTUAL + '.json');
+                if (!respuesta.ok) {
+                    throw new Error('No se pudo cargar el layout ' + LAYOUT_ACTUAL + ' (HTTP ' + respuesta.status + ').');
+                }
+                layout = await respuesta.json();
+            }
+            validarLayout(layout, LAYOUT_ACTUAL);
+            const idsDisponibles = obtenerIdsDisponibles();
+            if (layout.some(item => !idsDisponibles.has(item.id))) {
+                throw new Error('El layout ' + LAYOUT_ACTUAL + ' contiene IDs desconocidos.');
+            }
+            GRID_PRINCIPAL.load(layout);
+        }
 
-            try {
-                GRID_PRINCIPAL.load(JSON.parse(json), false);   // false = no crear ni eliminar widgets
+        function obtenerIdsDisponibles() {
+            return new Set(
+                Array.from(document.querySelectorAll('#grid-principal > .grid-stack-item'),
+                    item => item.getAttribute('gs-id'))
+            );
+        }
 
-            } catch (e) {
-                console.warn('Layout guardado inválido', e);
+        function limpiarLayoutsObsoletos() {
+            const idsDisponibles = obtenerIdsDisponibles();
+            LAYOUTS.forEach(function (nombre) {
+                const clave = PREFIJO_LAYOUT + nombre;
+                const json = localStorage.getItem(clave);
+                if (json === null) return;
+                const layout = JSON.parse(json);
+                validarLayout(layout, nombre);
+                if (layout.some(item => !idsDisponibles.has(item.id))) {
+                    console.warn('Se descartó el layout guardado con IDs desconocidos:', nombre);
+                    localStorage.removeItem(clave);
+                }
+            });
+        }
+
+        function validarLayout(layout, nombre) {
+            if (!Array.isArray(layout) ||
+                layout.some(item => !item || typeof item.id !== 'string') ||
+                new Set(layout.map(item => item.id)).size !== layout.length) {
+                throw new Error('El layout ' + nombre + ' contiene elementos inválidos.');
             }
         }
 
@@ -659,7 +691,21 @@
         }
 
         pestana.addEventListener("click", () => setMenu(!menu.classList.contains("abierto")));
-        menu.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+        menu.addEventListener("click", e => {
+            const enlace = e.target.closest("a");
+            if (!enlace) return;
+            if (enlace.dataset.layout) {
+                e.preventDefault();
+                try {
+                    localStorage.setItem(CLAVE_LAYOUT_ACTUAL, enlace.dataset.layout);
+                    location.reload();
+                } catch (error) {
+                    console.error("No se pudo cambiar el layout:", error);
+                    alert("No se pudo cambiar el layout: " + error);
+                }
+            }
+            setMenu(false);
+        });
         document.addEventListener("click", e => {
             if (!menu.contains(e.target) && !pestana.contains(e.target)) setMenu(false);
         });

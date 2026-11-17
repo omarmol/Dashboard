@@ -1,0 +1,16 @@
+[
+    {
+        "w": 4,
+        "h": 2,
+        "id": "gi-pol-item-poliductos",
+        "x": 8,
+        "y": 0
+    },
+    {
+        "w": 4,
+        "h": 3,
+        "id": "gi-pol-item-cumplimiento",
+        "x": 8,
+        "y": 2
+    }
+]

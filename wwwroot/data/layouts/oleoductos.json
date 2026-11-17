@@ -1,0 +1,50 @@
+[
+    {
+        "w": 4,
+        "h": 2,
+        "id": "gi-ole-item-oleoductos",
+        "x": 4,
+        "y": 0
+    },
+    {
+        "w": 4,
+        "h": 3,
+        "id": "gi-ole-item-crudo",
+        "x": 0,
+        "y": 2
+    },
+    {
+        "w": 4,
+        "h": 3,
+        "id": "gi-ole-item-glp",
+        "x": 4,
+        "y": 2
+    },
+    {
+        "w": 12,
+        "id": "gi-ole-separador-oleoductos",
+        "x": 0,
+        "y": 45
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-ole-entregas-crudo",
+        "x": 0,
+        "y": 46
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-ole-entregas-glp",
+        "x": 4,
+        "y": 46
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-ole-capacidad",
+        "x": 8,
+        "y": 46
+    }
+]

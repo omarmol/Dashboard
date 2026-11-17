@@ -1,0 +1,85 @@
+[
+    {
+        "w": 4,
+        "h": 2,
+        "id": "gi-gas-item-gasoductos",
+        "x": 0,
+        "y": 0
+    },
+    {
+        "w": 12,
+        "id": "gi-gas-separador-gasoductos",
+        "x": 0,
+        "y": 5
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-transporte-por-empresas",
+        "x": 0,
+        "y": 6
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-entregas-ductos",
+        "x": 4,
+        "y": 6
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-entregas-plantas",
+        "x": 8,
+        "y": 6
+    },
+    {
+        "w": 8,
+        "h": 9,
+        "id": "gi-gas-recepciones",
+        "x": 0,
+        "y": 15
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-consumo-termoelectrica",
+        "x": 8,
+        "y": 15
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-capacidad",
+        "x": 0,
+        "y": 24
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-transporte-sistema",
+        "x": 4,
+        "y": 24
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-participacion-cargador",
+        "x": 8,
+        "y": 24
+    },
+    {
+        "w": 7,
+        "h": 12,
+        "id": "gi-gas-transportado-mensual",
+        "x": 0,
+        "y": 33
+    },
+    {
+        "w": 5,
+        "h": 12,
+        "id": "gi-gas-consumo-departamento",
+        "x": 7,
+        "y": 33
+    }
+]

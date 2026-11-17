@@ -1,0 +1,235 @@
+[
+    {
+        "w": 4,
+        "h": 2,
+        "id": "gi-gas-item-gasoductos",
+        "x": 0,
+        "y": 0
+    },
+    {
+        "w": 4,
+        "h": 2,
+        "id": "gi-ole-item-oleoductos",
+        "x": 4,
+        "y": 0
+    },
+    {
+        "w": 4,
+        "h": 2,
+        "id": "gi-pol-item-poliductos",
+        "x": 8,
+        "y": 0
+    },
+    {
+        "w": 4,
+        "h": 3,
+        "id": "gi-ole-item-crudo",
+        "x": 0,
+        "y": 2
+    },
+    {
+        "w": 4,
+        "h": 3,
+        "id": "gi-ole-item-glp",
+        "x": 4,
+        "y": 2
+    },
+    {
+        "w": 4,
+        "h": 3,
+        "id": "gi-pol-item-cumplimiento",
+        "x": 8,
+        "y": 2
+    },
+    {
+        "w": 12,
+        "id": "gi-gas-separador-gasoductos",
+        "x": 0,
+        "y": 5
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-transporte-por-empresas",
+        "x": 0,
+        "y": 6
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-entregas-ductos",
+        "x": 4,
+        "y": 6
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-entregas-plantas",
+        "x": 8,
+        "y": 6
+    },
+    {
+        "w": 8,
+        "h": 9,
+        "id": "gi-gas-recepciones",
+        "x": 0,
+        "y": 15
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-consumo-termoelectrica",
+        "x": 8,
+        "y": 15
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-capacidad",
+        "x": 0,
+        "y": 24
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-transporte-sistema",
+        "x": 4,
+        "y": 24
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-gas-participacion-cargador",
+        "x": 8,
+        "y": 24
+    },
+    {
+        "w": 7,
+        "h": 12,
+        "id": "gi-gas-transportado-mensual",
+        "x": 0,
+        "y": 33
+    },
+    {
+        "w": 5,
+        "h": 12,
+        "id": "gi-gas-consumo-departamento",
+        "x": 7,
+        "y": 33
+    },
+    {
+        "w": 12,
+        "id": "gi-ole-separador-oleoductos",
+        "x": 0,
+        "y": 45
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-ole-entregas-crudo",
+        "x": 0,
+        "y": 46
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-ole-entregas-glp",
+        "x": 4,
+        "y": 46
+    },
+    {
+        "w": 4,
+        "h": 9,
+        "id": "gi-ole-capacidad",
+        "x": 8,
+        "y": 46
+    },
+    {
+        "w": 12,
+        "id": "gi-arica-separador-terminal-arica",
+        "x": 0,
+        "y": 55
+    },
+    {
+        "w": 4,
+        "h": 6,
+        "id": "gi-arica-estado-puerto",
+        "x": 0,
+        "y": 56
+    },
+    {
+        "w": 4,
+        "h": 6,
+        "id": "gi-arica-barcos-gira",
+        "x": 4,
+        "y": 56
+    },
+    {
+        "w": 4,
+        "h": 6,
+        "id": "gi-arica-despacho-cisternas",
+        "x": 8,
+        "y": 56
+    },
+    {
+        "w": 6,
+        "h": 9,
+        "id": "gi-arica-tanques-arica",
+        "x": 0,
+        "y": 62
+    },
+    {
+        "w": 6,
+        "h": 9,
+        "id": "gi-arica-grafico1",
+        "x": 6,
+        "y": 62
+    },
+    {
+        "w": 12,
+        "h": 12,
+        "id": "gi-arica-mensual-cisternas",
+        "x": 0,
+        "y": 71
+    },
+    {
+        "w": 12,
+        "id": "gi-perfil-separador-seguimiento",
+        "x": 0,
+        "y": 83
+    },
+    {
+        "w": 12,
+        "h": 12,
+        "id": "gi-perfil-ossa1",
+        "x": 0,
+        "y": 84
+    },
+    {
+        "w": 12,
+        "h": 12,
+        "id": "gi-perfil-pvt",
+        "x": 0,
+        "y": 96
+    },
+    {
+        "w": 12,
+        "h": 12,
+        "id": "gi-perfil-pcolp2",
+        "x": 0,
+        "y": 108
+    },
+    {
+        "w": 12,
+        "id": "gi-com-separador-comercial",
+        "x": 0,
+        "y": 120
+    },
+    {
+        "w": 12,
+        "h": 12,
+        "id": "gi-com-transito-resumen",
+        "x": 0,
+        "y": 121
+    }
+]

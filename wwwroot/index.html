@@ -22,6 +22,15 @@
         <a href="cargardatos.html">Cargar Datos</a>
         <a href="#" onclick="restaurarApariencia()">Restaurar Apariencia</a>
         <div class="menu-sep"></div>
+        <div class="menu-titulo">Layouts</div>
+        <a href="#" data-layout="default">Todos</a>
+        <a href="#" data-layout="gasoductos">Gasoductos</a>
+        <a href="#" data-layout="oleoductos">Oleoductos</a>
+        <a href="#" data-layout="poliductos">Poliductos</a>
+        <a href="#" data-layout="arica">Arica</a>
+        <a href="#" data-layout="perfil">Perfiles</a>
+        <a href="#" data-layout="comercial">Comercial</a>
+        <div class="menu-sep"></div>
         <fieldset>
             <legend>Apariencia</legend>
             <div id="selectorTemas" role="radiogroup" aria-label="Tema">
@@ -67,7 +76,7 @@
 
     <div id="grid-principal" class="grid-stack">
 
-        <div class="grid-stack-item" gs-id="item-gasoductos" gs-w="4" gs-h="2" id="item-gasoductos" tip="Gasoductos">
+        <div class="grid-stack-item" gs-id="gi-gas-item-gasoductos" gs-w="4" gs-h="2" id="gi-gas-item-gasoductos" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div class="st-card">
                     <span class="st-dot warn"></span>
@@ -79,7 +88,7 @@
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-id="item-oleoductos" gs-w="4" gs-h="2" id="item-oleoductos" tip="Oleoductos">
+        <div class="grid-stack-item" gs-id="gi-ole-item-oleoductos" gs-w="4" gs-h="2" id="gi-ole-item-oleoductos" tip="Oleoductos">
             <div class="grid-stack-item-content">
                 <div class="st-card">
                     <span class="st-dot ok"></span>
@@ -91,7 +100,7 @@
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-id="item-poliductos" gs-w="4" gs-h="2" id="item-poliductos" tip="Poliductos">
+        <div class="grid-stack-item" gs-id="gi-pol-item-poliductos" gs-w="4" gs-h="2" id="gi-pol-item-poliductos" tip="Poliductos">
             <div class="grid-stack-item-content">
                 <div class="st-card">
                     <span class="st-dot ok"></span>
@@ -104,7 +113,7 @@
         </div>
 
 
-        <div class="grid-stack-item borde-1" gs-id="item-crudo" gs-w="4" gs-h="3" id="item-crudo" tip="Oleoductos">
+        <div class="grid-stack-item borde-1" gs-id="gi-ole-item-crudo" gs-w="4" gs-h="3" id="gi-ole-item-crudo" tip="Oleoductos">
             <div class="grid-stack-item-content kpi-card">
                 <div class="kpi-label">Entrega crudo total</div>
                 <div class="kpi-value-row">
@@ -116,7 +125,7 @@
             </div>
         </div>
 
-        <div class="grid-stack-item borde-1" gs-id="item-glp" gs-w="4" gs-h="3" id="item-glp">
+        <div class="grid-stack-item borde-1" gs-id="gi-ole-item-glp" gs-w="4" gs-h="3" id="gi-ole-item-glp" tip="Oleoductos">
             <div class="grid-stack-item-content kpi-card">
                 <div class="kpi-label">Entrega GLP total</div>
                 <div class="kpi-value-row">
@@ -127,7 +136,7 @@
             </div>
         </div>
 
-        <div class="grid-stack-item borde-1" gs-id="item-cumplimiento" gs-w="4" gs-h="3" id="item-cumplimiento">
+        <div class="grid-stack-item borde-1" gs-id="gi-pol-item-cumplimiento" gs-w="4" gs-h="3" id="gi-pol-item-cumplimiento" tip="Poliductos">
             <div class="grid-stack-item-content kpi-card">
                 <div class="kpi-label">Cumplimiento poliductos</div>
                 <div class="kpi-value-row">
@@ -140,12 +149,12 @@
         </div>
 
         <!-- Transporte por Empresas, Exportación/Mercado Interno, Proceso y Consumo Plantas -->
-        <div class="grid-stack-item" gs-id="gi-separador-gasoductos" gs-w="12" gs-h="1">
+        <div class="grid-stack-item" gs-id="gi-gas-separador-gasoductos" gs-w="12" gs-h="1" tip="Gasoductos">
             <div class="grid-stack-item-content grid-stack-separador">
                 <div style="width: 100%; height: 100%;">SISTEMA DE GASODUCTOS</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-transporte-por-empresas" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-gas-transporte-por-empresas" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div style="width: 100%; height: 100%;">
                     <div class="tp-panel">
@@ -226,92 +235,92 @@
                 </div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-gas-entregas-ductos" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-gas-entregas-ductos" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasEntregasDuctos" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-gas-entregas-plantas" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-gas-entregas-plantas" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasEntregasPlantas" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
 
         <!-- Recepciones por Cargador, Consumo Termoeléctricas -->
-        <div class="grid-stack-item" gs-id="gi-gas-recepciones" gs-w="8" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-gas-recepciones" gs-w="8" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasRecepciones" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-gas-consumo-termoelectrica" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-gas-consumo-termoelectrica" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasConsumoXTermoelectrica" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
 
         <!-- % Uso Diario, Transporte por Sistemas, Participación X Cargador -->
-        <div class="grid-stack-item" gs-id="gi-gas-capacidad" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-gas-capacidad" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasCapacidad" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-gas-transporte-sistema" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-gas-transporte-sistema" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasTransporteXSistema" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-gas-participacion-cargador" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-gas-participacion-cargador" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasParticipacionXCargador" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
 
         <!-- Gas Transportado Evolución Mensual, Consumo X Departamento -->
-        <div class="grid-stack-item" gs-id="gi-gas-transportado-mensual" gs-w="7" gs-h="12">
+        <div class="grid-stack-item" gs-id="gi-gas-transportado-mensual" gs-w="7" gs-h="12" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasTransportadoMensual" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-gas-consumo-departamento" gs-w="5" gs-h="12">
+        <div class="grid-stack-item" gs-id="gi-gas-consumo-departamento" gs-w="5" gs-h="12" tip="Gasoductos">
             <div class="grid-stack-item-content">
                 <div id="chartGasConsumoXDepartamento" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
 
         <!-- OLEODUCTOS -->
-        <div class="grid-stack-item" gs-id="gi-separador-oleoductos" gs-w="12" gs-h="1">
+        <div class="grid-stack-item" gs-id="gi-ole-separador-oleoductos" gs-w="12" gs-h="1" tip="Oleoductos">
             <div class="grid-stack-item-content grid-stack-separador">
                 <div style="width: 100%; height: 100%;">SISTEMA DE OLEODUCTOS</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-ole-entregas-crudo" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-ole-entregas-crudo" gs-w="4" gs-h="9" tip="Oleoductos">
             <div class="grid-stack-item-content">
                 <div id="chartOleEntregasCrudo" style="width: 100%; height: 100%;">Entregas Crudo (CR)</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-ole-entregas-glp" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-ole-entregas-glp" gs-w="4" gs-h="9" tip="Oleoductos">
             <div class="grid-stack-item-content">
                 <div id="chartOleEntregasGlp" style="width: 100%; height: 100%;">Entregas GLP</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-ole-capacidad" gs-w="4" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-ole-capacidad" gs-w="4" gs-h="9" tip="Oleoductos">
             <div class="grid-stack-item-content">
                 <div id="chartOleCapacidad" style="width: 100%; height: 100%;">% Uso Diario - Sistemas Oleoductos</div>
             </div>
         </div>
 
         <!-- TERMINAL ARICA -->
-        <div class="grid-stack-item" gs-id="gi-separador-terminal-arica" gs-w="12" gs-h="1">
+        <div class="grid-stack-item" gs-id="gi-arica-separador-terminal-arica" gs-w="12" gs-h="1" tip="Arica">
             <div class="grid-stack-item-content grid-stack-separador">
                 <div style="width: 100%; height: 100%;">TERMINAL ARICA</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-ole-estado-puerto" gs-w="4" gs-h="6">
+        <div class="grid-stack-item" gs-id="gi-arica-estado-puerto" gs-w="4" gs-h="6" tip="Arica">
             <div class="grid-stack-item-content">
                 <div id="chartOleEstadoPuerto" style="width: 100%; height: 100%;">Estado de Puerto</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-ole-barcos-gira" gs-w="4" gs-h="6">
+        <div class="grid-stack-item" gs-id="gi-arica-barcos-gira" gs-w="4" gs-h="6" tip="Arica">
             <div class="grid-stack-item-content tm-panel">
                 <div class="tm-header">
                     <div>
@@ -339,7 +348,7 @@
                 </div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-ole-despacho-cisternas" gs-w="4" gs-h="6">
+        <div class="grid-stack-item" gs-id="gi-arica-despacho-cisternas" gs-w="4" gs-h="6" tip="Arica">
             <div class="grid-stack-item-content">
                 <div class="dc-panel">
                     <h3 class="dc-title">Despacho de cisternas</h3>
@@ -348,52 +357,52 @@
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-id="gi-ole-tanques-arica" gs-w="6" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-arica-tanques-arica" gs-w="6" gs-h="9" tip="Arica">
             <div class="grid-stack-item-content">
                 <div id="chartOleTanquesArica" style="width: 100%; height: 100%;">Tanques de Almacenaje</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-grafico1" gs-w="6" gs-h="9">
+        <div class="grid-stack-item" gs-id="gi-arica-grafico1" gs-w="6" gs-h="9" tip="Arica">
             <div class="grid-stack-item-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
                 <img id="imgOleaje" src="" alt="Cargando imagen..." style="max-width: 100%; max-height: 90%; object-fit: contain; display: none;" />
             </div>
         </div>
 
-        <div class="grid-stack-item" gs-id="gi-ole-mensual-cisternas" gs-w="12" gs-h="12">
+        <div class="grid-stack-item" gs-id="gi-arica-mensual-cisternas" gs-w="12" gs-h="12" tip="Arica">
             <div class="grid-stack-item-content">
                 <div id="chartOleResumenMensualCisternas" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
 
         <!-- SEGUIMIENTO OPERATIVO -->
-        <div class="grid-stack-item" gs-id="gi-separador-seguimiento" gs-w="12" gs-h="1">
+        <div class="grid-stack-item" gs-id="gi-perfil-separador-seguimiento" gs-w="12" gs-h="1" tip="Perfiles">
             <div class="grid-stack-item-content grid-stack-separador">
                 <div style="width: 100%; height: 100%;">GRÁFICOS DE SEGUIMIENTO OPERATIVO</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="perfil-ossa1" gs-w="12" gs-h="12">
+        <div class="grid-stack-item" gs-id="gi-perfil-ossa1" gs-w="12" gs-h="12" tip="Perfiles">
             <div class="grid-stack-item-content">
                 <div id="chartOSSA1" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="perfil-pvt" gs-w="12" gs-h="12">
+        <div class="grid-stack-item" gs-id="gi-perfil-pvt" gs-w="12" gs-h="12" tip="Perfiles">
             <div class="grid-stack-item-content">
                 <div id="chartPVT" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="perfil-pcolp2" gs-w="12" gs-h="12">
+        <div class="grid-stack-item" gs-id="gi-perfil-pcolp2" gs-w="12" gs-h="12" tip="Perfiles">
             <div class="grid-stack-item-content">
                 <div id="chartPCOLP2" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
 
         <!-- COMERCIAL -->
-        <div class="grid-stack-item" gs-id="gi-separador-comercial" gs-w="12" gs-h="1">
+        <div class="grid-stack-item" gs-id="gi-com-separador-comercial" gs-w="12" gs-h="1" tip="Comercial">
             <div class="grid-stack-item-content grid-stack-separador">
                 <div style="width: 100%; height: 100%;">GRÁFICOS COMERCIALES</div>
             </div>
         </div>
-        <div class="grid-stack-item" gs-id="gi-gas-transito-resumen" gs-w="12" gs-h="12">
+        <div class="grid-stack-item" gs-id="gi-com-transito-resumen" gs-w="12" gs-h="12" tip="Comercial">
             <div class="grid-stack-item-content">
                 <div id="chartGasTransitoResumen" style="width: 100%; height: 100%;"></div>
             </div>
