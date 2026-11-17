@@ -324,99 +324,99 @@
             CHARTS.length = 0;
 
             // GAS
-            CargarGasEntregasPlantas('chartGasEntregasPlantas',
+            cargarSiExiste(CargarGasEntregasPlantas, 'chartGasEntregasPlantas',
                 TEMA_DASHBOARD,
                 'Proceso y Consumo Plantas',
                 'Participación Ejecutada por Planta', 'MMpc', fechaStr);
 
-            CargarGasConsumoTermoelectricas('chartGasConsumoXTermoelectrica',
+            cargarSiExiste(CargarGasConsumoTermoelectricas, 'chartGasConsumoXTermoelectrica',
                 TEMA_DASHBOARD,
                 'Consumo Termoelectricas',
                 'Por planta, ejecutado', 'MMpc', fechaStr);
 
-            CargarGasExportacionMercadoInterno('chartGasEntregasDuctos',
+            cargarSiExiste(CargarGasExportacionMercadoInterno, 'chartGasEntregasDuctos',
                 TEMA_DASHBOARD,
                 'Exportación / Mercado Interno',
                 'Por Mercado', 'MMpc', fechaStr);
 
-            CargarGasTransitoResumen('chartGasTransitoResumen',
+            cargarSiExiste(CargarGasTransitoResumen, 'chartGasTransitoResumen',
                 TEMA_DASHBOARD,
                 'Flujo Argentina → Bolivia → Brasil',
                 'Ancho del flujo proporcional al volumen', 'MMmcd', fechaStr);
 
-            CargarGasUsoDiario('chartGasCapacidad',
+            cargarSiExiste(CargarGasUsoDiario, 'chartGasCapacidad',
                 TEMA_DASHBOARD,
                 '% Uso Diario - Sistemas de Gas',
                 'Capacidad utilizada por sistema', 'MMpc', fechaStr);
 
-            CargarGasRecepcionesXCargador('chartGasRecepciones',
+            cargarSiExiste(CargarGasRecepcionesXCargador, 'chartGasRecepciones',
                 TEMA_DASHBOARD,
                 'Recepciones por Cargador',
                 '', 'MMpc', fechaStr);
 
-            CargarGasTransporteXSistema('chartGasTransporteXSistema',
+            cargarSiExiste(CargarGasTransporteXSistema, 'chartGasTransporteXSistema',
                 TEMA_DASHBOARD,
                 'Transporte por Sistemas (MMPCD)',
                 'Ejecutado, mayor a menor', 'MMpcd', fechaStr);
             
-            CargarGasParticipacionXCargador('chartGasParticipacionXCargador',
+            cargarSiExiste(CargarGasParticipacionXCargador, 'chartGasParticipacionXCargador',
                 TEMA_DASHBOARD,
                 'Participación por Cargador',
                 '% ejecutado, por empresa', 'MMpcd', fechaStr);
 
-            CargarGasConsumoXDepartamento('chartGasConsumoXDepartamento',
+            cargarSiExiste(CargarGasConsumoXDepartamento, 'chartGasConsumoXDepartamento',
                 TEMA_DASHBOARD,
                 'Volumen por Departamento',
                 'Bolivia', 'MMpcd', fechaStr);
 
-            CargarGasTransportadoMensual('chartGasTransportadoMensual',
+            cargarSiExiste(CargarGasTransportadoMensual, 'chartGasTransportadoMensual',
                 TEMA_DASHBOARD,
                 'Gas Transportado - Evolución Mensual',
                 '', 'MMpcd', fechaStr);
 
             // OLE
-            CargarOleTanquesArica('chartOleTanquesArica',
+            cargarSiExiste(CargarOleTanquesArica, 'chartOleTanquesArica',
                 TEMA_DASHBOARD,
                 'Tanques de Almacenaje',
                 '', 'MMpcd', fechaStr);
 
-            CargarOleDespachoCisternas('dcCards',
+            cargarSiExiste(CargarOleDespachoCisternas, 'dcCards',
                 TEMA_DASHBOARD,
                 'Despacho de Cisternas',
                 '', 'MMpcd', fechaStr);
 
-            CargarOleResumenMensualCisternas('chartOleResumenMensualCisternas',
+            cargarSiExiste(CargarOleResumenMensualCisternas, 'chartOleResumenMensualCisternas',
                 TEMA_DASHBOARD,
                 'Resumen Mensual - Cisternas',
                 'Evolución Mensual', 'Bbl', fechaStr);
             
-            CargarOleEntregasCrudo('chartOleEntregasCrudo',
+            cargarSiExiste(CargarOleEntregasCrudo, 'chartOleEntregasCrudo',
                 TEMA_DASHBOARD,
                 'Entregas Crudo',
                 'RGV-OSSA 1 y 2, RGEB y total', 'MMm3', fechaStr);
 
-            CargarOleEntregasGlp('chartOleEntregasGlp',
+            cargarSiExiste(CargarOleEntregasGlp, 'chartOleEntregasGlp',
                 TEMA_DASHBOARD,
                 'Entregas GLP',
                 'Chorety, RGV, Palmasola 1-2 y total', 'MMm3', fechaStr);
 
-            CargarOleCapacidad('chartOleCapacidad',
+            cargarSiExiste(CargarOleCapacidad, 'chartOleCapacidad',
                 TEMA_DASHBOARD,
                 '% Uso Diario - Sistemas Oleoductos',
                 'Capacidad utilizada', 'MMm3', fechaStr);
 
             // PERFILES
-            CargarPerfil('chartOSSA1',
+            cargarSiExiste(CargarPerfil, 'chartOSSA1',
                 TEMA_DASHBOARD,
                 'OSSA-1',
                 'Posición real (Km) por lote/interfase, sobre perfil de elevación', 'Km', fechaStr, 'OSSA-1');
 
-            CargarPerfil('chartPVT',
+            cargarSiExiste(CargarPerfil, 'chartPVT',
                 TEMA_DASHBOARD,
                 'PVT',
                 'Posición real (Km) por lote/interfase, sobre perfil de elevación', 'Km', fechaStr, 'PVT');
 
-            CargarPerfil('chartPCOLP2',
+            cargarSiExiste(CargarPerfil, 'chartPCOLP2',
                 TEMA_DASHBOARD,
                 'PCOLP-2',
                 'Posición real (Km) por lote/interfase, sobre perfil de elevación', 'Km', fechaStr, 'PCOLP-2');
@@ -425,7 +425,7 @@
 
             // //CargarGasTransporteXSistema(fechaStr);
             // //imgOleaje
-            CargarImagenOleaje('imgOleaje', fechaStr);
+            cargarSiExiste(CargarImagenOleaje, 'imgOleaje', fechaStr);
 
 
             GRID_PRINCIPAL.on('resizestop', function () {
@@ -440,6 +440,67 @@
             });
         }
 
+        function cargarSiExiste(cargar, nombreDOM, ...argumentos) {
+            const elemento = document.getElementById(nombreDOM);
+            if (!elemento) return;
+
+            const carga = cargar(nombreDOM, ...argumentos);
+            const chart = echarts.getInstanceByDom(elemento);
+            carga.finally(function () {
+                if (!elemento.isConnected && chart) {
+                    if (!chart.isDisposed()) chart.dispose();
+                    CHARTS = CHARTS.filter(item => item !== chart);
+                }
+            });
+        }
+
+        function agregarBotonesEliminar() {
+            const grid = document.getElementById('grid-principal');
+            grid.querySelectorAll(':scope > .grid-stack-item').forEach(function (item) {
+                const boton = document.createElement('button');
+                boton.type = 'button';
+                boton.className = 'eliminar-widget';
+                boton.textContent = '×';
+                boton.title = 'Eliminar elemento';
+                boton.setAttribute('aria-label', 'Eliminar elemento del dashboard');
+                boton.setAttribute('data-html2canvas-ignore', 'true');
+                item.appendChild(boton);
+            });
+
+            grid.addEventListener('click', function (evento) {
+                const boton = evento.target.closest('.eliminar-widget');
+                if (!boton) return;
+                const item = boton.closest('.grid-stack-item');
+                if (!confirm('¿Desea eliminar este elemento del dashboard? Puede recuperarlo con Restaurar Apariencia.')) return;
+
+                const eliminados = obtenerWidgetsEliminados();
+                eliminados.add(item.getAttribute('gs-id'));
+                localStorage.setItem('widgetsEliminados', JSON.stringify([...eliminados]));
+
+                CHARTS = CHARTS.filter(function (chart) {
+                    if (!item.contains(chart.getDom())) return true;
+                    if (!chart.isDisposed()) chart.dispose();
+                    return false;
+                });
+                GRID_PRINCIPAL.removeWidget(item);
+                guardarLayout();
+            });
+        }
+
+        function obtenerWidgetsEliminados() {
+            const json = localStorage.getItem('widgetsEliminados');
+            if (!json) return new Set();
+            try {
+                const ids = JSON.parse(json);
+                if (!Array.isArray(ids) || !ids.every(id => typeof id === 'string')) {
+                    throw new Error('La lista de elementos eliminados no es válida.');
+                }
+                return new Set(ids);
+            } catch (error) {
+                console.warn('Lista de elementos eliminados inválida', error);
+                return new Set();
+            }
+        }
 
 
         document.addEventListener("DOMContentLoaded", async function () {
@@ -457,6 +518,11 @@
 
                 // 1) Restaurar layout
                 restaurarLayout();
+                const eliminados = obtenerWidgetsEliminados();
+                document.querySelectorAll('#grid-principal > .grid-stack-item').forEach(function (item) {
+                    if (eliminados.has(item.getAttribute('gs-id'))) GRID_PRINCIPAL.removeWidget(item);
+                });
+                agregarBotonesEliminar();
 
                 // Guardar automáticamente cada vez que el usuario mueva o cambie de tamaño
                 GRID_PRINCIPAL.on('change', function () {
@@ -500,6 +566,7 @@
 
         function restaurarApariencia() {
             localStorage.removeItem('layoutGrid');
+            localStorage.removeItem('widgetsEliminados');
             localStorage.removeItem('tema')
             location.reload();
 

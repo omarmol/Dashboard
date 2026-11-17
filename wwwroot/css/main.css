@@ -46,6 +46,35 @@ body {
     overflow: hidden;
 }
 
+.eliminar-widget {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid #a32f26;
+    border-radius: 4px;
+    background: #fff;
+    color: #a32f26;
+    font-size: 19px;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.eliminar-widget:hover,
+.eliminar-widget:focus-visible {
+    background: #a32f26;
+    color: #fff;
+}
+
+@media print {
+    .eliminar-widget {
+        display: none;
+    }
+}
+
 h2 {
     text-align: center;
     color: #333;

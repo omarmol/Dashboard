@@ -70,7 +70,7 @@ async function CargarOleDespachoCisternas(nombreDOM, tema, titulo, subTitulo, un
                 cisterna.color = PRODUCTOS[cisterna.producto] ?? '#000000';
             });
 
-        const contenedor = document.getElementById(nombreDOM);
+        const contenedor = objDOM;
 
         // Paleta de respaldo para tipos que no traigan color propio
         //const PALETA = ['#d97706', '#5b6b7b', '#6c4fd8', '#0a8091', '#c0392b', '#1e8449', '#b5338a'];
@@ -341,4 +341,3 @@ async function CargarOleCapacidad(nombreDOM, tema, titulo, subTitulo, unidadMedi
 }
 
         
-
