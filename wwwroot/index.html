@@ -74,6 +74,22 @@
     </div>
     <!-- Contenedor de la barra de días -->
 
+    <div id="selectorLayout" role="group" aria-label="Opciones del dashboard">
+        <span class="selector-layout-etiqueta">Ver:</span>
+        <button type="button" data-layout="default" aria-pressed="false">Todos</button>
+        <button type="button" data-layout="gasoductos" aria-pressed="false">Gasoductos</button>
+        <button type="button" data-layout="oleoductos" aria-pressed="false">Oleoductos</button>
+        <button type="button" data-layout="poliductos" aria-pressed="false">Poliductos</button>
+        <button type="button" data-layout="arica" aria-pressed="false">Arica</button>
+        <button type="button" data-layout="perfil" aria-pressed="false">Perfiles</button>
+        <button type="button" data-layout="comercial" aria-pressed="false">Comercial</button>
+        <div class="inmovilizar-layout" role="radiogroup" aria-labelledby="etiquetaInmovilizar">
+            <span id="etiquetaInmovilizar">Inmovilizar:</span>
+            <label><input type="radio" name="inmovilizar" value="si"> Sí</label>
+            <label><input type="radio" name="inmovilizar" value="no" checked> No</label>
+        </div>
+    </div>
+
     <div id="grid-principal" class="grid-stack">
 
         <div class="grid-stack-item" gs-id="gi-gas-item-gasoductos" gs-w="4" gs-h="2" id="gi-gas-item-gasoductos" tip="Gasoductos">

@@ -5,6 +5,7 @@
         var TEMAS = {};
         const LAYOUTS = ['default', 'gasoductos', 'oleoductos', 'poliductos', 'arica', 'perfil', 'comercial'];
         const CLAVE_LAYOUT_ACTUAL = 'layoutActual';
+        const CLAVE_INMOVILIZAR = 'inmovilizarLayout';
         const PREFIJO_LAYOUT = 'layoutGrid:';
         let LAYOUT_ACTUAL = 'default';
 
@@ -500,6 +501,7 @@
 
             try {
 
+                inicializarInmovilizar();
                 const seleccionado = localStorage.getItem(CLAVE_LAYOUT_ACTUAL) || 'default';
                 if (!LAYOUTS.includes(seleccionado)) {
                     throw new Error('El layout seleccionado no es válido: ' + seleccionado);
@@ -510,7 +512,8 @@
                 limpiarLayoutsObsoletos();
                 await restaurarLayout();
                 agregarBotonesEliminar();
-                document.querySelector(`[data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-current', 'true');
+                document.querySelector(`#menuFlotante [data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-current', 'true');
+                document.querySelector(`#selectorLayout [data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-pressed', 'true');
 
                 // Guardar automáticamente cada vez que el usuario mueva o cambie de tamaño
                 GRID_PRINCIPAL.on('change', function () {
@@ -549,6 +552,34 @@
 
 
         });
+
+        function inicializarInmovilizar() {
+            const control = document.querySelector('.inmovilizar-layout');
+            let estado = localStorage.getItem(CLAVE_INMOVILIZAR) || 'no';
+            if (estado !== 'si' && estado !== 'no') {
+                throw new Error('El estado de inmovilización no es válido: ' + estado);
+            }
+
+            function aplicarEstado() {
+                control.querySelector(`input[value="${estado}"]`).checked = true;
+                GRID_PRINCIPAL.enableMove(estado === 'no');
+                GRID_PRINCIPAL.enableResize(estado === 'no');
+            }
+
+            aplicarEstado();
+            control.addEventListener('change', function (evento) {
+                const nuevoEstado = evento.target.value;
+                try {
+                    localStorage.setItem(CLAVE_INMOVILIZAR, nuevoEstado);
+                    estado = nuevoEstado;
+                    aplicarEstado();
+                } catch (error) {
+                    aplicarEstado();
+                    console.error('No se pudo guardar el estado de inmovilización:', error);
+                    alert('No se pudo guardar el estado de inmovilización: ' + error);
+                }
+            });
+        }
 
         function restaurarApariencia() {
             LAYOUTS.forEach(nombre => localStorage.removeItem(PREFIJO_LAYOUT + nombre));
@@ -690,19 +721,28 @@
             pestana.setAttribute("aria-label", abierto ? "Cerrar menú" : "Abrir menú");
         }
 
+        function cambiarLayout(nombre) {
+            try {
+                localStorage.setItem(CLAVE_LAYOUT_ACTUAL, nombre);
+                location.reload();
+            } catch (error) {
+                console.error("No se pudo cambiar el layout:", error);
+                alert("No se pudo cambiar el layout: " + error);
+            }
+        }
+
+        document.getElementById("selectorLayout").addEventListener("click", e => {
+            const boton = e.target.closest("button[data-layout]");
+            if (boton) cambiarLayout(boton.dataset.layout);
+        });
+
         pestana.addEventListener("click", () => setMenu(!menu.classList.contains("abierto")));
         menu.addEventListener("click", e => {
             const enlace = e.target.closest("a");
             if (!enlace) return;
             if (enlace.dataset.layout) {
                 e.preventDefault();
-                try {
-                    localStorage.setItem(CLAVE_LAYOUT_ACTUAL, enlace.dataset.layout);
-                    location.reload();
-                } catch (error) {
-                    console.error("No se pudo cambiar el layout:", error);
-                    alert("No se pudo cambiar el layout: " + error);
-                }
+                cambiarLayout(enlace.dataset.layout);
             }
             setMenu(false);
         });
