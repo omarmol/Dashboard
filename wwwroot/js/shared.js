@@ -70,7 +70,8 @@
                         scale: scale,
                         useCORS: true,
                         logging: false,
-                        backgroundColor: bgBody
+                        backgroundColor: bgBody,
+                        ignoreElements: element => element.id === 'segundo'
                     });
                     headerImgData = headerCanvas.toDataURL('image/png');
 
