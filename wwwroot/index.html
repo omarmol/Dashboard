@@ -18,9 +18,11 @@
     <nav class="menu" id="menuFlotante" aria-label="Menú principal">
         <div class="menu-titulo">Menú</div>
         <a href="index.html" aria-current="page">Dashboard</a>
-        <a href="#" onclick="exportarDashboardCompletoPDF()">Exportar PDF</a>
         <a href="cargardatos.html">Cargar Datos</a>
+        <div class="menu-sep"></div>
+        <div class="menu-titulo">Opciones</div>
         <a href="#" onclick="restaurarApariencia()">Restaurar Apariencia</a>
+        <a href="#" onclick="exportarDashboardCompletoPDF()">Exportar a PDF</a>
         <div class="menu-sep"></div>
         <!-- <div class="menu-titulo">Layouts</div>
         <a href="#" data-layout="default">Todos</a>
@@ -32,7 +34,7 @@
         <a href="#" data-layout="comercial">Comercial</a>
         <div class="menu-sep"></div> -->
         <fieldset>
-            <legend>Apariencia</legend>
+            <legend>Temas</legend>
             <div id="selectorTemas" role="radiogroup" aria-label="Tema">
                 <!--<div class="tema">-->
                 <!--<label><input type="radio" name="tema" value="light"> Claro</label>
@@ -70,7 +72,10 @@
                 <!-- Los botones se generarán aquí con JavaScript -->
             </div>
         </div>
-        <div id="tercero" class="top-logos"></div>
+        <div id="tercero" class="top-logos">
+            <img src="img/gscs.jpg" alt="GSCS">
+
+        </div>
     </div>
     <!-- Contenedor de la barra de días -->
 
@@ -83,10 +88,9 @@
         <button type="button" data-layout="arica" aria-pressed="false">Arica</button>
         <button type="button" data-layout="perfil" aria-pressed="false">Perfiles</button>
         <button type="button" data-layout="comercial" aria-pressed="false">Comercial</button>
-        <div class="inmovilizar-layout" role="radiogroup" aria-labelledby="etiquetaInmovilizar">
-            <span id="etiquetaInmovilizar">Inmovilizar:</span>
-            <label><input type="radio" name="inmovilizar" value="si"> Sí</label>
-            <label><input type="radio" name="inmovilizar" value="no" checked> No</label>
+        <div class="inmovilizar-layout">
+            <label for="switchInmovilizar">Inmovilizar:</label>
+            <input id="switchInmovilizar" type="checkbox" role="switch">
         </div>
     </div>
 
@@ -390,7 +394,34 @@
             </div>
         </div>
 
-        <!-- SEGUIMIENTO OPERATIVO -->
+         <!-- POLIDUCTOS -->
+        <div class="grid-stack-item" gs-id="gi-pol-separador-poliductos" gs-w="12" gs-h="1" tip="Poliductos">
+            <div class="grid-stack-item-content grid-stack-separador">
+                <div style="width: 100%; height: 100%;">SISTEMA DE POLIDUCTOS</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-pol-recepciones" gs-w="3" gs-h="9" tip="Poliductos">
+            <div class="grid-stack-item-content">
+                <div id="chartPolRecepciones" style="width: 100%; height: 100%;">Recepciones</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-pol-entregas" gs-w="3" gs-h="9" tip="Poliductos">
+            <div class="grid-stack-item-content">
+                <div id="chartPolEntregas" style="width: 100%; height: 100%;">Entregas</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-pol-cumplimiento" gs-w="3" gs-h="9" tip="Poliductos">
+            <div class="grid-stack-item-content">
+                <div id="chartPolCumplimiento" style="width: 100%; height: 100%;">% Cumplimiento Diario</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-pol-uso-diario" gs-w="3" gs-h="9" tip="Poliductos">
+            <div class="grid-stack-item-content">
+                <div id="chartPolUsoDiario" style="width: 100%; height: 100%;">% Uso Diario</div>
+            </div>
+        </div>
+
+        <!-- GRAFICOS SEGUIMIENTO OPERATIVO -->
         <div class="grid-stack-item" gs-id="gi-perfil-separador-seguimiento" gs-w="12" gs-h="1" tip="Perfiles">
             <div class="grid-stack-item-content grid-stack-separador">
                 <div style="width: 100%; height: 100%;">GRÁFICOS DE SEGUIMIENTO OPERATIVO</div>
@@ -411,6 +442,28 @@
                 <div id="chartPCOLP2" style="width: 100%; height: 100%;"></div>
             </div>
         </div>
+
+        <div class="grid-stack-item" gs-id="gi-nov-separador-novedades" gs-w="12" gs-h="1" tip="Novedades">
+            <div class="grid-stack-item-content grid-stack-separador">
+                <div style="width: 100%; height: 100%;">NOVEDADES SISTEMAS DE TRANSPORTE</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-gas-novedades" gs-w="4" gs-h="6" tip="Gasoductos">
+            <div class="grid-stack-item-content">
+                <div>Gasoductos</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-ole-novedades" gs-w="4" gs-h="6" tip="Oleoductos">
+            <div class="grid-stack-item-content">
+                <div>Oleoductos</div>
+            </div>
+        </div>
+        <div class="grid-stack-item" gs-id="gi-pol-novedades" gs-w="4" gs-h="6" tip="Poliductos">
+            <div class="grid-stack-item-content">
+                <div>Poliductos</div>
+            </div>
+        </div>
+        
 
         <!-- COMERCIAL -->
         <div class="grid-stack-item" gs-id="gi-com-separador-comercial" gs-w="12" gs-h="1" tip="Comercial">

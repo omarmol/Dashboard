@@ -1,16 +1,63 @@
 [
     {
-        "w": 4,
+        "w": 12,
         "h": 2,
         "id": "gi-pol-item-poliductos",
-        "x": 8,
+        "x": 0,
         "y": 0
     },
     {
-        "w": 4,
+        "w": 6,
         "h": 3,
         "id": "gi-pol-item-cumplimiento",
-        "x": 8,
+        "x": 0,
         "y": 2
+    },
+    {
+        "w": 12,
+        "id": "gi-pol-separador-poliductos",
+        "x": 0,
+        "y": 78
+    },
+    {
+        "w": 3,
+        "h": 9,
+        "id": "gi-pol-recepciones",
+        "x": 0,
+        "y": 79
+    },
+    {
+        "w": 3,
+        "h": 9,
+        "id": "gi-pol-entregas",
+        "x": 3,
+        "y": 79
+    },
+    {
+        "w": 3,
+        "h": 9,
+        "id": "gi-pol-cumplimiento",
+        "x": 6,
+        "y": 79
+    },
+    {
+        "w": 3,
+        "h": 9,
+        "id": "gi-pol-uso-diario",
+        "x": 9,
+        "y": 79
+    },
+    {
+        "w": 12,
+        "id": "gi-nov-separador-novedades",
+        "x": 0,
+        "y": 120
+    },
+    {
+        "w": 4,
+        "h": 6,
+        "id": "gi-pol-novedades",
+        "x": 0,
+        "y": 121
     }
 ]

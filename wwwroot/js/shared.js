@@ -511,7 +511,7 @@
                 localStorage.removeItem('widgetsEliminados');
                 limpiarLayoutsObsoletos();
                 await restaurarLayout();
-                agregarBotonesEliminar();
+                //agregarBotonesEliminar();
                 //document.querySelector(`#menuFlotante [data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-current', 'true');
                 document.querySelector(`#selectorLayout [data-layout="${LAYOUT_ACTUAL}"]`).setAttribute('aria-pressed', 'true');
 
@@ -554,21 +554,21 @@
         });
 
         function inicializarInmovilizar() {
-            const control = document.querySelector('.inmovilizar-layout');
+            const control = document.getElementById('switchInmovilizar');
             let estado = localStorage.getItem(CLAVE_INMOVILIZAR) || 'no';
             if (estado !== 'si' && estado !== 'no') {
                 throw new Error('El estado de inmovilización no es válido: ' + estado);
             }
 
             function aplicarEstado() {
-                control.querySelector(`input[value="${estado}"]`).checked = true;
+                control.checked = estado === 'si';
                 GRID_PRINCIPAL.enableMove(estado === 'no');
                 GRID_PRINCIPAL.enableResize(estado === 'no');
             }
 
             aplicarEstado();
-            control.addEventListener('change', function (evento) {
-                const nuevoEstado = evento.target.value;
+            control.addEventListener('change', function () {
+                const nuevoEstado = control.checked ? 'si' : 'no';
                 try {
                     localStorage.setItem(CLAVE_INMOVILIZAR, nuevoEstado);
                     estado = nuevoEstado;

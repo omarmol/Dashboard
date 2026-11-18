@@ -1,6 +1,6 @@
 [
     {
-        "w": 4,
+        "w": 12,
         "h": 2,
         "id": "gi-gas-item-gasoductos",
         "x": 0,
@@ -81,5 +81,18 @@
         "id": "gi-gas-consumo-departamento",
         "x": 7,
         "y": 33
+    },
+    {
+        "w": 12,
+        "id": "gi-nov-separador-novedades",
+        "x": 0,
+        "y": 120
+    },
+    {
+        "w": 4,
+        "h": 6,
+        "id": "gi-gas-novedades",
+        "x": 0,
+        "y": 121
     }
 ]
