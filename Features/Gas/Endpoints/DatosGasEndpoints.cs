@@ -61,5 +61,10 @@ public static class DatosGasEndpoints
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
+
+        grupo.MapGet("/cumplimiento", async (DateOnly fecha, IGasCumplimientoService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
     }
 }

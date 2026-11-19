@@ -38,7 +38,12 @@ public static class DatosOleEndpoints
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
 
-         grupo.MapGet("/imagen-oleaje", async (DateOnly fecha, IOleImagenOleajeService servicio) =>
+        grupo.MapGet("/imagen-oleaje", async (DateOnly fecha, IOleImagenOleajeService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
+
+        grupo.MapGet("/cumplimiento", async (DateOnly fecha, IOleCumplimientoService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
