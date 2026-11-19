@@ -43,6 +43,16 @@ public static class DatosOleEndpoints
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });
 
+        grupo.MapGet("/kpi-entregas-crudo", async (DateOnly fecha, IOleKpiService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerEntregaCrudoTotalAsync(fecha));
+        });
+        
+        grupo.MapGet("/kpi-entregas-glp", async (DateOnly fecha, IOleKpiService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerEntregaGlpTotalAsync(fecha));
+        });
+
         grupo.MapGet("/cumplimiento", async (DateOnly fecha, IOleCumplimientoService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));

@@ -336,6 +336,9 @@
         cargarSiExiste(CargarOleCumplimiento, 'dotOleCumplimiento',
             fechaStr);
 
+        cargarSiExiste(CargarOleKpiEntregasCrudo, 'dotOleKpiEntregasCrudo',
+            fechaStr);
+
         cargarSiExiste(CargarGasEntregasPlantas, 'chartGasEntregasPlantas',
             TEMA_DASHBOARD,
             'Proceso y Consumo Plantas',

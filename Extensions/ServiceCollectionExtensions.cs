@@ -31,6 +31,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOleImagenOleajeService, OleImagenOleajeService>();
         services.AddScoped<IOleCumplimientoService, OleCumplimientoService>();
         services.AddScoped<IGasCumplimientoService, GasCumplimientoService>();
+        services.AddScoped<IOleKpiService, OleKpiService>();
 
         return services;
     }

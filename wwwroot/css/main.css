@@ -875,12 +875,12 @@ button.pestana {
 }
 
 .kpi-label {
-    font-family: 'Consolas', 'Courier New', monospace;
-    font-size: 15px;
+    /* font-family: 'Consolas', 'Courier New', monospace; */
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #6b7785;
+    /* color: #6b7785; */
 }
 
 .kpi-value-row {
@@ -891,16 +891,16 @@ button.pestana {
 }
 
 .kpi-value {
-    font-size: 28px;
+    font-size: 25px;
     font-weight: 800;
-    color: #0f2133;
+    /* color: #0f2133; */
     line-height: 1.1;
 }
 
 .kpi-unit {
     font-size: 17px;
     font-weight: 600;
-    color: #6b7785;
+    /* color: #6b7785; */
 }
 
 .kpi-delta {
@@ -909,17 +909,17 @@ button.pestana {
     /*line-height: 1.5;*/
 }
 
-    .kpi-delta.up {
-        color: #1e8a4c;
-    }
+.kpi-delta.up {
+    color: #1e8a4c;
+}
 
-    .kpi-delta.down {
-        color: #c0392b;
-    }
+.kpi-delta.down {
+    color: #c0392b;
+}
 
-    .kpi-delta.flat {
-        color: #6b7785;
-    }
+.kpi-delta.flat {
+    color: #6b7785;
+}
 
 
 
