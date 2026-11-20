@@ -44,8 +44,8 @@ public class OleKpiService : IOleKpiService
 
         while (await lector.ReadAsync())
         {
-            programado_hoy = lector.GetRequiredDouble("programado");
-            ejecutado_hoy = lector.GetRequiredDouble("ejecutado");
+            programado_hoy = lector.GetDoubleOrDefault("programado", 0);
+            ejecutado_hoy = lector.GetDoubleOrDefault("ejecutado", 0);
             cumplimiento_hoy = programado_hoy == 0 ? 0 : Math.Round(ejecutado_hoy / programado_hoy * 100, 2);
             cantidad_datos++;
         }
@@ -70,8 +70,10 @@ public class OleKpiService : IOleKpiService
 
         while (await lector2.ReadAsync())
         {
-            ejecutado_ayer = lector2.GetRequiredDouble("ejecutado");
+            ejecutado_ayer = lector2.GetDoubleOrDefault("ejecutado", 0);
             cumplimiento_ayer = ejecutado_ayer == 0 ? 0 : Math.Round(ejecutado_hoy / ejecutado_ayer * 100, 1);
+
+            Console.WriteLine($"Ejecutado ayer: {ejecutado_ayer}, Ejecutado hoy: {ejecutado_hoy}");
             cantidad_datos++;
         }
 
@@ -117,8 +119,8 @@ public class OleKpiService : IOleKpiService
 
         while (await lector.ReadAsync())
         {
-            programado_hoy = lector.GetRequiredDouble("programado");
-            ejecutado_hoy = lector.GetRequiredDouble("ejecutado");
+            programado_hoy = lector.GetDoubleOrDefault("programado", 0);
+            ejecutado_hoy = lector.GetDoubleOrDefault("ejecutado", 0);
             cumplimiento_hoy = programado_hoy == 0 ? 0 : Math.Round(ejecutado_hoy / programado_hoy * 100, 2);
             cantidad_datos++;
         }
@@ -139,7 +141,7 @@ public class OleKpiService : IOleKpiService
 
         while (await lector2.ReadAsync())
         {
-            ejecutado_ayer = lector2.GetRequiredDouble("ejecutado");
+            ejecutado_ayer = lector2.GetDoubleOrDefault("ejecutado", 0);
             cumplimiento_ayer = ejecutado_ayer == 0 ? 0 : Math.Round(ejecutado_hoy / ejecutado_ayer * 100, 1);
             cantidad_datos++;
         }
