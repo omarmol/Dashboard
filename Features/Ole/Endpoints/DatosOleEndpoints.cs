@@ -53,9 +53,9 @@ public static class DatosOleEndpoints
             return Results.Ok(await servicio.ObtenerEntregaGlpTotalAsync(fecha));
         });
 
-        grupo.MapGet("/cumplimiento", async (DateOnly fecha, IOleCumplimientoService servicio) =>
+        grupo.MapGet("/cumplimiento", async (DateOnly fecha, IOleKpiService servicio) =>
         {
-            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+            return Results.Ok(await servicio.ObtenerCumplimientoAsync(fecha));
         });
     }
 }

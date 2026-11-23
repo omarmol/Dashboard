@@ -333,10 +333,16 @@
         cargarSiExiste(CargarGasCumplimiento, 'dotGasCumplimiento',
             fechaStr);
 
-        cargarSiExiste(CargarOleCumplimiento, 'dotOleCumplimiento',
+        cargarSiExiste(CargarOleKpiCumplimiento, 'dotOleCumplimiento',
+            fechaStr);
+
+        cargarSiExiste(CargarPolKpiCumplimiento, 'dotPolKpiCumplimiento',
             fechaStr);
 
         cargarSiExiste(CargarOleKpiEntregasCrudo, 'dotOleKpiEntregasCrudo',
+            fechaStr);
+        
+        cargarSiExiste(CargarOleKpiEntregasGlp, 'dotOleKpiEntregasGlp',
             fechaStr);
 
         cargarSiExiste(CargarGasEntregasPlantas, 'chartGasEntregasPlantas',

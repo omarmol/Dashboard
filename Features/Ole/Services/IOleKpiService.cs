@@ -4,7 +4,8 @@ namespace Dashboard.Features.Ole.Services;
 
 public interface IOleKpiService
 {
-    // Task<IEnumerable<object>> ObtenerTodosAsync();
+    Task<object> ObtenerCumplimientoAsync(DateOnly fecha);
+
     Task<object> ObtenerEntregaCrudoTotalAsync(DateOnly fecha);
 
     Task<object> ObtenerEntregaGlpTotalAsync(DateOnly fecha);

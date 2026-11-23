@@ -1,6 +1,7 @@
 using Dashboard.Features.DataImport.Services;
 using Dashboard.Features.Gas.Services;
 using Dashboard.Features.Ole.Services;
+using Dashboard.Features.Pol.Services;
 using Dashboard.Features.Profiles.Services;
 
 namespace Dashboard.Extensions;
@@ -29,9 +30,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOleEntregasCrudoService, OleEntregasCrudoService>();
         services.AddScoped<IOleEntregasGlpService, OleEntregasGlpService>();
         services.AddScoped<IOleImagenOleajeService, OleImagenOleajeService>();
-        services.AddScoped<IOleCumplimientoService, OleCumplimientoService>();
         services.AddScoped<IGasCumplimientoService, GasCumplimientoService>();
         services.AddScoped<IOleKpiService, OleKpiService>();
+        services.AddScoped<IPolKpiService, PolKpiService>();
 
         return services;
     }

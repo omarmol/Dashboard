@@ -13,6 +13,10 @@ public class CargarExcelService : ICargarExcelService
     // Si una fuente no existe, no aporta filas; el destino igualmente se actualiza.
     private static readonly ConfiguracionTabla[] Tablas =
     [
+        new("pol_recepciones", [Fuente("pol_recepciones", ColumnasFlujoPoliductos())]),
+        new("pol_entregas", [Fuente("pol_entregas", ColumnasFlujoPoliductos())]),
+        new("pol_capacidad", [Fuente("pol_capacidad", ColumnasCapacidad())]),
+
         new("ole_recepciones_crudo", [Fuente("ole_recepciones_crudo", ColumnasFlujo(conCargador: true))]),
         new("ole_recepciones_glp", [Fuente("ole_recepciones_glp", ColumnasFlujo(conCargador: false))]),
         new("ole_entregas_crudo", [Fuente("ole_entregas_crudo", ColumnasFlujo(conCargador: false))]),
@@ -350,6 +354,14 @@ public class CargarExcelService : ICargarExcelService
     [
         conCargador ? Texto("cargador", "Cargador", obligatoria: false) : Constante("cargador", ""),
         Texto("campo", "Campo"),
+        Numero("programado", "Programado"),
+        Numero("ejecutado", "Ejecutado"),
+        Numero("hoy", "Hoy")
+    ];
+
+    private static ConfiguracionColumna[] ColumnasFlujoPoliductos() =>
+    [
+        Texto("poliducto", "Poliducto"),
         Numero("programado", "Programado"),
         Numero("ejecutado", "Ejecutado"),
         Numero("hoy", "Hoy")

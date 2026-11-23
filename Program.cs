@@ -3,6 +3,7 @@ using Dashboard.Features.Gas.Endpoints;
 using Dashboard.Features.Ole.Endpoints;
 using Dashboard.Features.Profiles.Endpoints;
 using Dashboard.Extensions;
+using Dashboard.Features.Pol.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ app.UseStaticFiles();
 
 app.MapDatosGasEndpoints();
 app.MapDatosOleEndpoints();
+app.MapDatosPolEndpoints();
 app.MapCargarDatosEndpoints();
 app.MapDatosPerfilesEndpoints();
 
