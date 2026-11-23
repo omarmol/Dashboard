@@ -330,7 +330,7 @@
         CHARTS.length = 0;
 
         // GAS
-        cargarSiExiste(CargarGasCumplimiento, 'dotGasCumplimiento',
+        cargarSiExiste(CargarGasKpiCumplimiento, 'dotGasCumplimiento',
             fechaStr);
 
         cargarSiExiste(CargarOleKpiCumplimiento, 'dotOleCumplimiento',

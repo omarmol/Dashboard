@@ -328,7 +328,7 @@ h1 {
 }
 
 .grid-stack-item.borde-1 > .grid-stack-item-content {
-    border-top: 6px solid var(--tema-color-1);
+    border-top: 6px solid var(--navy);
 }
 
 .grid-stack-item.borde-2 > .grid-stack-item-content {
@@ -611,7 +611,7 @@ button.pestana {
 
 .tp-card {
     border: 1px solid #e3e7ec;
-    border-top: 5px solid #0a8091; /* franja superior de color */
+    border-top: 5px solid var(--navy); /* franja superior de color */
     border-radius: 12px;
     padding: 14px 16px 12px;
     /*background: #fff;*/
@@ -625,7 +625,7 @@ button.pestana {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 8px;
+    margin-bottom: 30px;
 }
 
     .tp-logo img {
@@ -650,13 +650,13 @@ button.pestana {
 .tp-value-unit {
     font-size: 16px;
     font-weight: 600;
-    color: #6b7785;
+    /* color: #6b7785; */
 }
 
 .tp-delta {
     margin-top: 6px;
     /*font-family: 'Consolas', 'Courier New', monospace;*/
-    font-size: 15px;
+    font-size: 14px;
 }
 
     .tp-delta.down {
@@ -676,7 +676,7 @@ button.pestana {
     padding-top: 10px;
     border-top: 1px solid #e3e7ec;
     display: flex;
-    gap: 28px;
+    gap: 20px;
 }
 
 .tp-footer-item .lbl {
