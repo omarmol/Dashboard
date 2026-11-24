@@ -1,4 +1,4 @@
-async function CargarGasKpiCumplimiento(nombreDOM, fechaStr) {
+async function CargarGasKpi1Cumplimiento(nombreDOM, fechaStr) {
 
     try {
 
@@ -27,7 +27,7 @@ async function CargarGasKpiCumplimiento(nombreDOM, fechaStr) {
     //window.addEventListener('resize', () => chartMapa.resize());
 }
 
-async function CargarOleKpiCumplimiento(nombreDOM, fechaStr) {
+async function CargarOleKpi1Cumplimiento(nombreDOM, fechaStr) {
 
     try {
 
@@ -56,8 +56,51 @@ async function CargarOleKpiCumplimiento(nombreDOM, fechaStr) {
     //window.addEventListener('resize', () => chartMapa.resize());
 }
 
+async function CargarPolKpi1Cumplimiento(nombreDOM, fechaStr) {
 
-async function CargarOleKpiEntregasCrudo(nombreDOM, fechaStr) {
+    try {
+
+        let objDOM = document.getElementById(nombreDOM);
+        let indicador = objDOM.querySelector('.st-dot');
+        let texto = objDOM.querySelector('.st-sub');
+
+        let cumplimientoRecepciones = "";
+
+        let resCumplimientoRecepciones = await fetch('api/pol/cumplimiento-recepciones?fecha=' + fechaStr + '');
+        let dataOriginalCumplimientoRecepciones = await resCumplimientoRecepciones.json();
+
+        cumplimientoRecepciones = "Recep. " + dataOriginalCumplimientoRecepciones.recepciones_mayor_a + "/" + dataOriginalCumplimientoRecepciones.total_recepciones;
+
+
+        let cumplimientoEntregas = "";
+
+        let resCumplimientoEntregas = await fetch('api/pol/cumplimiento-entregas?fecha=' + fechaStr + '');
+        let dataOriginalCumplimientoEntregas = await resCumplimientoEntregas.json();
+
+        cumplimientoEntregas = "Ent. " + dataOriginalCumplimientoEntregas.entregas_mayor_a + "/" + dataOriginalCumplimientoEntregas.total_entregas;
+
+        texto.innerText = cumplimientoRecepciones + " · " + cumplimientoEntregas + " >= 100%";
+
+        if (dataOriginalCumplimientoRecepciones.recepciones_mayor_a < dataOriginalCumplimientoRecepciones.total_recepciones 
+            || dataOriginalCumplimientoEntregas.entregas_mayor_a < dataOriginalCumplimientoEntregas.total_entregas) {
+            indicador.classList.add('warn');
+            indicador.classList.remove('ok');
+        } else {
+            indicador.classList.remove('warn');
+            indicador.classList.add('ok');
+        }
+
+
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+}
+
+
+async function CargarOleKpi2EntregasCrudo(nombreDOM, fechaStr) {
 
     try {
 
@@ -124,7 +167,7 @@ async function CargarOleKpiEntregasCrudo(nombreDOM, fechaStr) {
 }
 
 
-async function CargarOleKpiEntregasGlp(nombreDOM, fechaStr) {
+async function CargarOleKpi2EntregasGlp(nombreDOM, fechaStr) {
 
     try {
 
@@ -171,7 +214,7 @@ async function CargarOleKpiEntregasGlp(nombreDOM, fechaStr) {
 }
 
 
-async function CargarPolKpiCumplimiento(nombreDOM, fechaStr) {
+async function CargarPolKpi2Cumplimiento(nombreDOM, fechaStr) {
 
     try {
 
@@ -237,6 +280,112 @@ async function CargarPolKpiCumplimiento(nombreDOM, fechaStr) {
             cumplimiento_ayer.classList.remove('down');
         }
 
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+}
+
+
+async function CargarGasKpi3TransporteXEmpresa(nombreDOM, fechaStr) {
+
+    try {
+
+        let objDOM = document.getElementById(nombreDOM);
+        let tr_ejecutado = objDOM.querySelector('#tr-ejecutado');
+        let tr_cumplimiento = objDOM.querySelector('#tr-cumplimiento');
+        let tr_programado = objDOM.querySelector('#tr-programado');
+        let tr_hoy = objDOM.querySelector('#tr-hoy');
+        let ts_ejecutado = objDOM.querySelector('#ts-ejecutado');
+        let ts_cumplimiento = objDOM.querySelector('#ts-cumplimiento');
+        let ts_programado = objDOM.querySelector('#ts-programado');
+        let ts_hoy = objDOM.querySelector('#ts-hoy');
+        let gtb_ejecutado = objDOM.querySelector('#gtb-ejecutado');
+        let gtb_cumplimiento = objDOM.querySelector('#gtb-cumplimiento');
+        let gtb_programado = objDOM.querySelector('#gtb-programado');
+        let gtb_hoy = objDOM.querySelector('#gtb-hoy');
+
+
+        let res = await fetch('api/gas/transporte-empresa?fecha=' + fechaStr + '');
+        let dataOriginal = await res.json();
+
+        //console.log(dataOriginal);
+
+        tr_ejecutado.innerText = '#N/D';
+        tr_programado.innerText = '#N/D';
+        tr_hoy.innerText = '#N/D';
+        ts_ejecutado.innerText = '#N/D';
+        ts_programado.innerText = '#N/D';
+        ts_hoy.innerText = '#N/D';
+        gtb_ejecutado.innerText = '#N/D';
+        gtb_programado.innerText = '#N/D';
+        gtb_hoy.innerText = '#N/D';
+
+        dataOriginal.forEach(function (f) {
+
+            if (f.sistema == 'YPFB TRANSPORTE S.A.'){
+                tr_ejecutado.innerText = f.ejecutado;
+                tr_programado.innerText = 'Prog: ' + f.programado;
+                tr_hoy.innerText = 'Hoy: ' + f.hoy;
+
+                if (f.cumplimiento > 0){
+                    tr_cumplimiento.innerText = "▲ " + f.cumplimiento + '% vs. Prog.';
+                    tr_cumplimiento.classList.add('up');
+                    tr_cumplimiento.classList.remove('flat');
+                } else if (f.cumplimiento < 0) {
+                    tr_cumplimiento.innerText = "▼ " + f.cumplimiento + '% vs. Prog.';
+                    tr_cumplimiento.classList.add('down');
+                    tr_cumplimiento.classList.remove('flat');
+                } else {
+                    tr_cumplimiento.innerText = "Similar vs. Prog.";
+                    tr_cumplimiento.classList.add('up');
+                    tr_cumplimiento.classList.remove('flat');
+                }
+
+            }else if (f.sistema == 'YPFB TRANSIERRA S.A.'){
+                ts_ejecutado.innerText = f.ejecutado;
+                ts_programado.innerText = 'Prog: ' + f.programado;
+                ts_hoy.innerText = 'Hoy: ' + f.hoy;
+                if (f.cumplimiento > 0){
+                    ts_cumplimiento.innerText = "▲ " + f.cumplimiento + '% vs. Prog.';
+                    ts_cumplimiento.classList.add('up');
+                    ts_cumplimiento.classList.remove('flat');
+                } else if (f.cumplimiento < 0) {
+                    ts_cumplimiento.innerText = "▼ " + f.cumplimiento + '% vs. Prog.';
+                    ts_cumplimiento.classList.add('down');
+                    ts_cumplimiento.classList.remove('flat');
+                } else {
+                    ts_cumplimiento.innerText = "Similar vs. Prog.";
+                    ts_cumplimiento.classList.add('up');
+                    ts_cumplimiento.classList.remove('flat');
+                }
+            }
+            else if (f.sistema == 'GTB'){
+                gtb_ejecutado.innerText = f.ejecutado;
+                gtb_programado.innerText = 'Prog: ' + f.programado;
+                gtb_hoy.innerText = 'Hoy: ' + f.hoy;
+                if (f.cumplimiento > 0){
+                    gtb_cumplimiento.innerText = "▲ " + f.cumplimiento + '% vs. Prog.';
+                    gtb_cumplimiento.classList.add('up');
+                    gtb_cumplimiento.classList.remove('flat');
+                } else if (f.cumplimiento < 0) {
+                    gtb_cumplimiento.innerText = "▼ " + f.cumplimiento + '% vs. Prog.';
+                    gtb_cumplimiento.classList.add('down');
+                    gtb_cumplimiento.classList.remove('flat');
+                } else {
+                    gtb_cumplimiento.innerText = "Similar vs. Prog.";
+                    gtb_cumplimiento.classList.add('up');
+                    gtb_cumplimiento.classList.remove('flat');
+                }
+            }
+            else {
+                console.warn("Sistema no reconocido: ", f.sistema);
+            }
+
+            
+        });
 
     }
     catch (error) {

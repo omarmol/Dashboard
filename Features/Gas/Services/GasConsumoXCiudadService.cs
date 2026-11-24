@@ -22,7 +22,18 @@ public class GasConsumoXCiudadService : IGasConsumoXCiudadService
 
 
         const string sql = @"
-                SELECT ciudad, ejecutado 
+                SELECT 
+                CASE ciudad 
+                    WHEN 'SCZ' THEN 'Santa Cruz' 
+                    WHEN 'CBBA' THEN 'Cochabamba'
+                    WHEN 'OR' THEN 'Oruro'
+                    WHEN 'LPZ' THEN 'La Paz'
+                    WHEN 'TJA' THEN 'Tarija'
+                    WHEN 'SCRE' THEN 'Chuquisaca'
+                    WHEN 'POT' THEN 'Potosi'
+                    WHEN 'PDO' THEN 'Pando'
+                    WHEN 'BEN' THEN 'Beni'
+                END as ciudad, ejecutado  
                 FROM gas_consumo_por_ciudad 
                 WHERE CAST(fecha AS DATE) = @fechaFiltro";
 

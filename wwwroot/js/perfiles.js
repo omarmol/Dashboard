@@ -161,31 +161,31 @@
             try {
 
                 const option = {
-                    title: [
-                        {
-                            text: titulo,
-                            subtext: subTitulo,
-                            left: 'left'
-                        },
-                        {
-                            text: unidadMedida,
-                            right: 7,
-                            top: 3,
-                            textStyle: {
-                                fontSize: 12,
-                                fontWeight: 'normal'
-                                //color: '#3a7d8c'          // color del texto (ajústalo al de tu imagen)
-                            },
-                            backgroundColor: '#ffffff',
-                            borderColor: '#d9d9d9',
-                            borderWidth: 1,
-                            borderRadius: 14,           // mayor valor = más redondeado
-                            padding: [4, 14],
-                            shadowColor: 'rgba(0, 0, 0, 0.08)',
-                            shadowBlur: 4,
-                            shadowOffsetY: 1
-                        }
-                    ],
+                    // title: [
+                    //     {
+                    //         text: titulo,
+                    //         subtext: subTitulo,
+                    //         left: 'left'
+                    //     },
+                    //     {
+                    //         text: unidadMedida,
+                    //         right: 7,
+                    //         top: 3,
+                    //         textStyle: {
+                    //             fontSize: 12,
+                    //             fontWeight: 'normal'
+                    //             //color: '#3a7d8c'          // color del texto (ajústalo al de tu imagen)
+                    //         },
+                    //         backgroundColor: '#ffffff',
+                    //         borderColor: '#d9d9d9',
+                    //         borderWidth: 1,
+                    //         borderRadius: 14,           // mayor valor = más redondeado
+                    //         padding: [4, 14],
+                    //         shadowColor: 'rgba(0, 0, 0, 0.08)',
+                    //         shadowBlur: 4,
+                    //         shadowOffsetY: 1
+                    //     }
+                    // ],
                     animation: false,
                     legend: legend,
 
@@ -194,8 +194,8 @@
                     visualMap: visualMap,
                     tooltip: tooltip,
                     grid: [
-                        { left: 55, right: 25, top: 190, height: 170 },
-                        { left: 55, right: 25, top: 380, height: 28 }
+                        { left: 55, right: 25, top: 150, height: 170 },
+                        { left: 55, right: 25, top: 330, height: 28 }
                     ],
                     xAxis: [
                         {

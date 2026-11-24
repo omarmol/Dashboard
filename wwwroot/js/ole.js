@@ -184,6 +184,8 @@ async function CargarOleResumenMensualCisternas(nombreDOM, tema, titulo, subTitu
         let res = await fetch('api/ole/mensual-cisternas?fecha=' + fechaStr + '');
         let dataOriginal = await res.json();
 
+        //console.log(dataOriginal);
+
         let [dia, mes, anio] = fechaStr.split("-").map(Number);
         let fecha = new Date(anio, mes - 1, dia);
 
@@ -240,9 +242,9 @@ async function CargarOleEntregasCrudo(nombreDOM, tema, titulo, subTitulo, unidad
 
         let series = [];
 
-        series.push({ name: 'Programado', type: 'bar', data: dataOriginal.programado });
-        series.push({ name: 'Ejecutado', type: 'bar', data: dataOriginal.ejecutado });
-        series.push({ name: 'Hoy', type: 'bar', data: dataOriginal.ejecutado });
+        series.push({ name: 'Programado', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.programado });
+        series.push({ name: 'Ejecutado', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.ejecutado });
+        series.push({ name: 'Hoy', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.ejecutado });
 
 
         if (dataOriginal.cantidad_datos > 0) {
@@ -279,10 +281,10 @@ async function CargarOleEntregasGlp(nombreDOM, tema, titulo, subTitulo, unidadMe
 
         let series = [];
 
-        series.push({ name: 'Programado', type: 'bar', data: dataOriginal.programado });
-        series.push({ name: 'Ejecutado', type: 'bar', data: dataOriginal.ejecutado });
-        series.push({ name: 'Hoy', type: 'bar', data: dataOriginal.ejecutado });
-
+        series.push({ name: 'Programado', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.programado });
+        series.push({ name: 'Ejecutado', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.ejecutado });
+        series.push({ name: 'Hoy', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.ejecutado });
+        
 
         if (dataOriginal.cantidad_datos > 0) {
             GraficarBarrasVerticales(eChart, dataOriginal.campo, series, titulo, subTitulo, unidadMedida)

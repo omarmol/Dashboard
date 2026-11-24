@@ -36,7 +36,7 @@ public class OleMensualCisternasService : IOleMensualCisternasService
 
         await using var comando = new SqlCommand(sql_ducto, conexion);
         comando.Parameters.Add("@fechaInicio", System.Data.SqlDbType.Date).Value =
-            fecha.ToDateTime(TimeOnly.MinValue);
+            fechaInicio;
         comando.Parameters.Add("@fechaFin", System.Data.SqlDbType.Date).Value =
             fecha.ToDateTime(TimeOnly.MinValue);
 

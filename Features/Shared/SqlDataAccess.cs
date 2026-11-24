@@ -77,4 +77,12 @@ internal static class SqlDataAccess
 
         return Convert.ToInt32(reader.GetValue(ordinal));
     }
+
+    public static int GetInt32OrDefault(this SqlDataReader reader, string columnName, int defaultValue)
+    {
+        var ordinal = reader.GetOrdinal(columnName);
+        return reader.IsDBNull(ordinal)
+            ? defaultValue
+            : Convert.ToInt32(reader.GetValue(ordinal));
+    }
 }

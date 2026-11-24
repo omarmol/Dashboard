@@ -68,6 +68,7 @@ public class CargarExcelService : ICargarExcelService
             ])
         ]),
         new("gas_sistemas_transporte", [Fuente("gas_sistemas_transporte", ColumnasFlujoSistema())]),
+        new("gas_transporte_empresas", [Fuente("gas_transporte_empresas", ColumnasFlujoSistema())]),
         new("gas_transferencias", [Fuente("gas_transferencias", ColumnasFlujoSistema())]),
         new("gas_consumo_por_ciudad",
         [

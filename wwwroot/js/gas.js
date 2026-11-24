@@ -170,9 +170,9 @@ async function CargarGasExportacionMercadoInterno(nombreDOM, tema, titulo, subTi
 
         let series = [];
 
-        series.push({ name: 'Programado', type: 'bar', data: dataOriginal.programado });
-        series.push({ name: 'Ejecutado', type: 'bar', data: dataOriginal.ejecutado });
-        series.push({ name: 'Hoy', type: 'bar', data: dataOriginal.ejecutado });
+        series.push({ name: 'Programado', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.programado });
+        series.push({ name: 'Ejecutado', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.ejecutado });
+        series.push({ name: 'Hoy', type: 'bar', itemStyle: { borderRadius: [2, 2, 0, 0] }, data: dataOriginal.ejecutado });
 
 
         if (dataOriginal.cantidad_datos > 0) {

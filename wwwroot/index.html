@@ -193,56 +193,56 @@
                                 <div class="tp-logo"><img src="img/ypfbtr.jpg" alt="YPFB Transporte"></div>
 
                                 <div class="tp-value-row">
-                                    <span class="tp-value" data-f="ejecutado">24,66</span>
+                                    <span class="tp-value" id="tr-ejecutado" >#N/D</span>
                                     <span class="tp-value-unit">MMmc</span>
                                 </div>
 
-                                <div class="tp-delta flat" data-f="delta">0.3% vs. programado</div>
+                                <div class="tp-delta flat" id="tr-cumplimiento">#N/D</div>
 
                                 <div class="tp-footer">
                                     <div class="tp-footer-item">
-                                        <div class="lbl">Prog: <b>10,21</b></div>
+                                        <div class="lbl" id="tr-programado">#N/D</div>
                                     </div>
                                     <div class="tp-footer-item">
-                                        <div class="lbl">Hoy: <b>10,61</b></div>
+                                        <div class="lbl" id="tr-hoy">#N/D</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tp-card" data-id="tr">
+                            <div class="tp-card" data-id="ts">
                                 <div class="tp-logo"><img src="img/ypfbts.jpg" alt="YPFB Transierra"></div>
 
                                 <div class="tp-value-row">
-                                    <span class="tp-value" data-f="ejecutado">10,19</span>
+                                    <span class="tp-value" id="ts-ejecutado" >#N/D</span>
                                     <span class="tp-value-unit">MMmc</span>
                                 </div>
 
-                                <div class="tp-delta flat" data-f="delta">0.2% vs. programado</div>
+                                <div class="tp-delta flat" id="ts-cumplimiento">#N/D</div>
 
                                 <div class="tp-footer">
                                     <div class="tp-footer-item">
-                                        <div class="lbl">Prog: <b>10,21</b></div>
+                                        <div class="lbl" id="ts-programado">#N/D</div>
                                     </div>
                                     <div class="tp-footer-item">
-                                        <div class="lbl">Hoy: <b>10,61</b></div>
+                                        <div class="lbl" id="ts-hoy">#N/D</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tp-card" data-id="tr">
+                            <div class="tp-card" data-id="gtb">
                                 <div class="tp-logo"><img src="img/gtb.jpg" alt="GTB"></div>
 
                                 <div class="tp-value-row">
-                                    <span class="tp-value" data-f="ejecutado">10,3</span>
+                                    <span class="tp-value" id="gtb-ejecutado">#N/D</span>
                                     <span class="tp-value-unit">MMmc</span>
                                 </div>
 
-                                <div class="tp-delta flat" data-f="delta">0,8% vs. programado</div>
+                                <div class="tp-delta flat" id="gtb-cumplimiento">#N/D</div>
 
                                 <div class="tp-footer">
                                     <div class="tp-footer-item">
-                                        <div class="lbl">Prog: <b>10,23</b></div>
+                                        <div class="lbl" id="gtb-programado">#N/D</div>
                                     </div>
                                     <div class="tp-footer-item">
-                                        <div class="lbl">Hoy: <b>11,47</b></div>
+                                        <div class="lbl" id="gtb-hoy">#N/D</div>
                                     </div>
                                 </div>
                             </div>
@@ -256,53 +256,140 @@
         </div>
         <div class="grid-stack-item" gs-id="gi-gas-entregas-ductos" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasEntregasDuctos" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Exportación / Mercado Interno</h3>
+                            <div class="tp-subtitle">Argentina, GTB-MTN, GTB-CHQ, M. Interno</div>
+                        </div>
+                        <span class="tp-unit">MMmc</span>
+                    </div>
+                    <div id="chartGasEntregasDuctos" style="width: 100%; height: 100%;"></div>
+
+                </div>
+
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-gas-entregas-plantas" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasEntregasPlantas" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Proceso y Consumo Plantas</h3>
+                            <div class="tp-subtitle">Participación ejecutada por planta</div>
+                        </div>
+                        <span class="tp-unit">MMpcd</span>
+                    </div>
+                    <div id="chartGasEntregasPlantas" style="width: 100%; height: 100%;"></div>
+                </div>
             </div>
         </div>
 
         <!-- Recepciones por Cargador, Consumo Termoeléctricas -->
         <div class="grid-stack-item" gs-id="gi-gas-recepciones" gs-w="8" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasRecepciones" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Recepciones por Agente</h3>
+                        </div>
+                        <span class="tp-unit">MMmc</span>
+                    </div>
+                    <div id="chartGasRecepciones" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-gas-consumo-termoelectrica" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasConsumoXTermoelectrica" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Consumo Termoeléctricas</h3>
+                            <div class="tp-subtitle">Por planta, ejecutado</div>
+                        </div>
+                        <span class="tp-unit">MMpc</span>
+                    </div>
+                    <div id="chartGasConsumoXTermoelectrica" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
 
         <!-- % Uso Diario, Transporte por Sistemas, Participación X Cargador -->
         <div class="grid-stack-item" gs-id="gi-gas-capacidad" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasCapacidad" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">% Uso Diario - Sistema de Gas</h3>
+                            <div class="tp-subtitle">Capacidad utilizada por sistema</div>
+                        </div>
+                        <span class="tp-unit">%</span>
+                    </div>
+                    <div id="chartGasCapacidad" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-gas-transporte-sistema" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasTransporteXSistema" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Transporte por Sistemas (MMPCD)</h3>
+                            <div class="tp-subtitle">Ejecutado, mayor a menor</div>
+                        </div>
+                        <span class="tp-unit">MMPCD</span>
+                    </div>
+                    <div id="chartGasTransporteXSistema" style="width: 100%; height: 100%;"></div>
+                </div>
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-gas-participacion-cargador" gs-w="4" gs-h="9" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasParticipacionXCargador" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Participación por Agente</h3>
+                            <div class="tp-subtitle">% ejecutado, por empresa</div>
+                        </div>
+                        <span class="tp-unit">%</span>
+                    </div>
+                    <div id="chartGasParticipacionXCargador" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
 
         <!-- Gas Transportado Evolución Mensual, Consumo X Departamento -->
         <div class="grid-stack-item" gs-id="gi-gas-transportado-mensual" gs-w="7" gs-h="12" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasTransportadoMensual" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Gas Transportado — Evolución Mensual</h3>
+                            <div class="tp-subtitle">GTB-MTN, GTB-CHIQ, Gija Exportación, M. Interno, Argentina GT y Total</div>
+                        </div>
+                        <span class="tp-unit">MMmc</span>
+                    </div>
+                    <div id="chartGasTransportadoMensual" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-gas-consumo-departamento" gs-w="5" gs-h="12" tip="Gasoductos">
             <div class="grid-stack-item-content">
-                <div id="chartGasConsumoXDepartamento" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Consumo de Gas por Departamento</h3>
+                            <div class="tp-subtitle">Ejecutado, por departamento (MMmc y MMpcd)</div>
+                        </div>
+                        <span class="tp-unit">MMmc</span>
+                    </div>
+                    <div id="chartGasConsumoXDepartamento" style="width: 100%; height: 100%;"></div>
+                </div>
             </div>
         </div>
 
@@ -314,17 +401,47 @@
         </div>
         <div class="grid-stack-item" gs-id="gi-ole-entregas-crudo" gs-w="4" gs-h="9" tip="Oleoductos">
             <div class="grid-stack-item-content">
-                <div id="chartOleEntregasCrudo" style="width: 100%; height: 100%;">Entregas Crudo (CR)</div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Entregas Crudo (CR)</h3>
+                            <div class="tp-subtitle">RGV-OSSA 1 y 2, RGEB y total</div>
+                        </div>
+                        <span class="tp-unit">BBL</span>
+                    </div>
+                    <div id="chartOleEntregasCrudo" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-ole-entregas-glp" gs-w="4" gs-h="9" tip="Oleoductos">
             <div class="grid-stack-item-content">
-                <div id="chartOleEntregasGlp" style="width: 100%; height: 100%;">Entregas GLP</div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Entregas GLP</h3>
+                            <div class="tp-subtitle">Chorety, RGV, Palmasola 1-2 y total</div>
+                        </div>
+                        <span class="tp-unit">BBL</span>
+                    </div>
+                    <div id="chartOleEntregasGlp" style="width: 100%; height: 100%;">Entregas GLP</div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-ole-capacidad" gs-w="4" gs-h="9" tip="Oleoductos">
             <div class="grid-stack-item-content">
-                <div id="chartOleCapacidad" style="width: 100%; height: 100%;">% Uso Diario - Sistemas Oleoductos</div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">% Uso Diario — Sistema Oleoductos</h3>
+                            <div class="tp-subtitle">Capacidad utilizada</div>
+                        </div>
+                        <span class="tp-unit">%</span>
+                    </div>
+                    <div id="chartOleCapacidad" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
 
@@ -378,18 +495,50 @@
 
         <div class="grid-stack-item" gs-id="gi-arica-tanques-arica" gs-w="6" gs-h="9" tip="Arica">
             <div class="grid-stack-item-content">
-                <div id="chartOleTanquesArica" style="width: 100%; height: 100%;">Tanques de Almacenaje</div>
+                <div class="tp-panel">
+
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Tanques de almacenaje</h3>
+                            <div class="tp-subtitle">Espacio disponible, saldo almacenado y agua libre por tanque</div>
+                        </div>
+                        <span class="tp-unit">BBL</span>
+                    </div>
+                    <div id="chartOleTanquesArica" style="width: 100%; height: 100%;">Tanques de Almacenaje</div>
+
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-arica-grafico1" gs-w="6" gs-h="9" tip="Arica">
-            <div class="grid-stack-item-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-                <img id="imgOleaje" src="" alt="Cargando imagen..." style="max-width: 100%; max-height: 90%; object-fit: contain; display: none;" />
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Condición de Oleaje en Terminal Sica Sica</h3>
+                        </div>
+                    </div>
+                    <img id="imgOleaje" src="" alt="Cargando imagen..." style="max-width: 100%; max-height: 90%; object-fit: contain; display: none;" />
+
+                </div>
+                
             </div>
         </div>
 
         <div class="grid-stack-item" gs-id="gi-arica-mensual-cisternas" gs-w="12" gs-h="12" tip="Arica">
             <div class="grid-stack-item-content">
-                <div id="chartOleResumenMensualCisternas" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Resumen Mensual — Cisternas</h3>
+                            <div class="tp-subtitle">DO, I&A y CR — Evolución mensual</div>
+                        </div>
+                        <span class="tp-unit">Bbl</span>
+                    </div>
+                    <div id="chartOleResumenMensualCisternas" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
 
@@ -401,12 +550,32 @@
         </div>
         <div class="grid-stack-item" gs-id="gi-pol-recepciones" gs-w="3" gs-h="9" tip="Poliductos">
             <div class="grid-stack-item-content">
-                <div id="chartPolRecepciones" style="width: 100%; height: 100%;">Recepciones</div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Recepciones</h3>
+                            <div class="tp-subtitle">PCOLP-1/2, PCPV, PSCZ-1, PCS, PSP, PVT</div>
+                        </div>
+                        <span class="tp-unit">m3</span>
+                    </div>
+                    <div id="chartPolRecepciones" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-pol-entregas" gs-w="3" gs-h="9" tip="Poliductos">
             <div class="grid-stack-item-content">
-                <div id="chartPolEntregas" style="width: 100%; height: 100%;">Entregas</div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Entregas</h3>
+                            <div class="tp-subtitle">Senkata, Oruro, P.Villarroel, Chorety, Q.Qhora, Potosi, Tarija</div>
+                        </div>
+                        <span class="tp-unit">m3</span>
+                    </div>
+                    <div id="chartPolEntregas" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-pol-cumplimiento" gs-w="3" gs-h="9" tip="Poliductos">
@@ -428,17 +597,47 @@
         </div>
         <div class="grid-stack-item" gs-id="gi-perfil-ossa1" gs-w="12" gs-h="12" tip="Perfiles">
             <div class="grid-stack-item-content">
-                <div id="chartOSSA1" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">OSSA-1</h3>
+                            <div class="tp-subtitle">Posición real (Km) por lote/interfase, sobre perfil de elevación</div>
+                        </div>
+                        <span class="tp-unit">Bbls</span>
+                    </div>
+                    <div id="chartOSSA1" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-perfil-pvt" gs-w="12" gs-h="12" tip="Perfiles">
             <div class="grid-stack-item-content">
-                <div id="chartPVT" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">PVT</h3>
+                            <div class="tp-subtitle">Posición real (Km)</div>
+                        </div>
+                        <span class="tp-unit">Bbls</span>
+                    </div>
+                    <div id="chartPVT" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-perfil-pcolp2" gs-w="12" gs-h="12" tip="Perfiles">
             <div class="grid-stack-item-content">
-                <div id="chartPCOLP2" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">PCOLP-2</h3>
+                            <div class="tp-subtitle">Posición real (Km)</div>
+                        </div>
+                        <span class="tp-unit">Bbls</span>
+                    </div>
+                    <div id="chartPCOLP2" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
 
@@ -502,6 +701,7 @@
     <script src="js/graficos.js"></script>
     <script src="js/gas.js"></script>
     <script src="js/ole.js"></script>
+    <script src="js/pol.js"></script>
     <script src="js/perfiles.js"></script>
     <script src="js/kpi.js"></script>
 </body>

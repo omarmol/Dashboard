@@ -3,31 +3,31 @@ function GraficarTorta(objetoEcharts, datos, titulo, subTitulo, unidadMedida) {
     try {
 
         const option = {
-            title: [
-                {
-                    text: titulo,
-                    subtext: subTitulo,
-                    left: 'left'
-                },
-                {
-                    text: unidadMedida,
-                    right: 7,
-                    top: 3,
-                    textStyle: {
-                        fontSize: 12,
-                        fontWeight: 'normal'
-                        //color: '#3a7d8c'          // color del texto (ajústalo al de tu imagen)
-                    },
-                    backgroundColor: '#ffffff',
-                    borderColor: '#d9d9d9',
-                    borderWidth: 1,
-                    borderRadius: 14,           // mayor valor = más redondeado
-                    padding: [4, 14],
-                    shadowColor: 'rgba(0, 0, 0, 0.08)',
-                    shadowBlur: 4,
-                    shadowOffsetY: 1
-                }
-            ],
+            // title: [
+            //     {
+            //         text: titulo,
+            //         subtext: subTitulo,
+            //         left: 'left'
+            //     },
+            //     {
+            //         text: unidadMedida,
+            //         right: 7,
+            //         top: 3,
+            //         textStyle: {
+            //             fontSize: 12,
+            //             fontWeight: 'normal'
+            //             //color: '#3a7d8c'          // color del texto (ajústalo al de tu imagen)
+            //         },
+            //         backgroundColor: '#ffffff',
+            //         borderColor: '#d9d9d9',
+            //         borderWidth: 1,
+            //         borderRadius: 14,           // mayor valor = más redondeado
+            //         padding: [4, 14],
+            //         shadowColor: 'rgba(0, 0, 0, 0.08)',
+            //         shadowBlur: 4,
+            //         shadowOffsetY: 1
+            //     }
+            // ],
 
             tooltip: {
                 trigger: 'item',
@@ -36,14 +36,14 @@ function GraficarTorta(objetoEcharts, datos, titulo, subTitulo, unidadMedida) {
             legend: {
                 orient: 'vertical',
                 left: 15,
-                top: 60
+                top: 20
             },
             series: [
                 {
                     name: 'Volumen',
                     type: 'pie',
-                    radius: ['0%', '60%'],        // más pequeña para dejar espacio a las etiquetas
-                    center: ['68%', '54%'],       // más a la derecha
+                    radius: ['0%', '80%'],        // más pequeña para dejar espacio a las etiquetas
+                    center: ['68%', '50%'],       // más a la derecha
                     label: {
                         formatter: '{d}%',
                         width: 120,
@@ -63,9 +63,9 @@ function GraficarTorta(objetoEcharts, datos, titulo, subTitulo, unidadMedida) {
                         }
                     },*/
                     itemStyle: {
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                        borderRadius: 6,
+                        // borderColor: '#ffffff',
+                        borderWidth: 1,
+                        borderRadius: 4,
                         shadowBlur: 18,
                         shadowOffsetX: 4,
                         shadowOffsetY: 8,
@@ -100,20 +100,20 @@ function GraficarBarrasVerticales(objetoEcharts, datos, series, titulo, subTitul
     try {
 
         const option = {
-            title: {
-                text: titulo,
-                subtext: subTitulo
-            },
+            // title: {
+            //     text: titulo,
+            //     subtext: subTitulo
+            // },
             tooltip: {
                 trigger: 'axis',
                 axisPointer: { type: 'shadow' }
             },
             legend: {
                 right: '5%',
-                top: '5%'
+                top: '0%'
             },
             grid: {
-                top: '25%',
+                top: '15%',
                 left: '3%',
                 right: '4%',
                 bottom: '3%',
@@ -128,8 +128,8 @@ function GraficarBarrasVerticales(objetoEcharts, datos, series, titulo, subTitul
                 }
             },
             yAxis: {
-                type: 'value',
-                name: 'Volumen'
+                type: 'value'
+                // name: 'Volumen'
             },
             series: series
         };
@@ -148,22 +148,22 @@ function GraficarBarrasHorizontales(objetoEcharts, datos, series, titulo, subTit
     try {
 
         const option = {
-            title: {
-                text: titulo,
-                subtext: subTitulo
-            },
+            // title: {
+            //     text: titulo,
+            //     subtext: subTitulo
+            // },
             tooltip: {
                 trigger: 'axis',
                 axisPointer: { type: 'shadow' }
             },
             legend: {
                 right: '5%',
-                top: '5%'
+                top: '0%'
             },
             grid: {
-                top: '15%',
+                top: '10%',
                 left: '3%',
-                right: '15%',
+                right: '10%',
                 bottom: '3%',
                 containLabel: true
             },
@@ -172,8 +172,8 @@ function GraficarBarrasHorizontales(objetoEcharts, datos, series, titulo, subTit
                 data: datos
             },
             xAxis: {
-                type: 'value',
-                name: 'Volumen'
+                type: 'value'
+                // name: 'Volumen'
             },
             series: series
         };
@@ -197,13 +197,13 @@ function GraficarMapa(objetoEcharts, datos, nombreMapa, titulo, subTitulo, unida
         const minVal = valores.length > 0 ? Math.min(...valores) : 0;
 
         const option = {
-            title: {
-                text: titulo,
-                subtext: subTitulo
-            },
+            // title: {
+            //     text: titulo,
+            //     subtext: subTitulo
+            // },
             tooltip: {
                 trigger: 'item',
-                formatter: '{b}:<br/>Volumen: <b>{c}</b>'
+                formatter: '{b}:<br/>Volumen: <b>{c} MMmc</b>'
             },
             visualMap: {
                 show: false,
@@ -216,7 +216,7 @@ function GraficarMapa(objetoEcharts, datos, nombreMapa, titulo, subTitulo, unida
                 inRange: {
                     color: [
                         '#fff',
-                        colorDelTema(TEMA_DASHBOARD, 0)
+                        colorDelTema(TEMA_DASHBOARD, 2)
                     ]
                 }
             },
@@ -225,10 +225,10 @@ function GraficarMapa(objetoEcharts, datos, nombreMapa, titulo, subTitulo, unida
                     name: 'Volumen',
                     type: 'map',
                     map: nombreMapa,
-                    roam: true, // Permite Zoom y Arrastrar con el mouse
+                    // roam: true, // Permite Zoom y Arrastrar con el mouse
                     aspectScale: 1,
                     layoutCenter: ['50%', '50%'],
-                    layoutSize: '70%',
+                    layoutSize: '100%',
 
                     emphasis: {
                         label: { show: true },
@@ -237,11 +237,11 @@ function GraficarMapa(objetoEcharts, datos, nombreMapa, titulo, subTitulo, unida
                     label: {
                         show: true,
                         // Muestra el nombre del Departamento y su Volumen directamente sobre el mapa
-                        //formatter: '{b}\n{c}',
-                        formatter: '{b}',
+                        formatter: '{b}\n{c} MMmc',
+                        //formatter: '{b}{c} MMmc</b>',
                         fontSize: 10,
-                        //fontWeight: 'bold',
-                        color: '#222'
+                        fontWeight: 'bold',
+                        // color: '#222'
                     },
                     data: datos
                 }
@@ -262,20 +262,23 @@ function GraficarLineasHorizontales(objetoEcharts, datos, series, titulo, subTit
     try {
 
         const option = {
-            title: {
-                text: titulo,
-                subtext: subTitulo
-            },
+            // title: {
+            //     text: titulo,
+            //     subtext: subTitulo
+            // },
             tooltip: {
                 trigger: 'axis'
             },
             legend: {
+                right: '5%',
+                top: '0%',
                 data: series.map(function (s) { return s.name; })
             },
             grid: {
                 left: '3%',
                 right: '4%',
-                bottom: '15%',
+                bottom: '5%',
+                top: '10%',
                 containLabel: true
             },
             xAxis: {
@@ -403,7 +406,7 @@ function GraficarTanques(objetoEcharts, datos, titulo, subTitulo, unidadMedida) 
                         '<br/>Ocupación: <b>' + (t.sal_alm / t.capacidad * 100).toFixed(1) + ' %</b>';
                 }
             },
-            grid: { left: 50, right: 20, top: 50, height: 135 },
+            grid: { left: 30, right: 30, top: 30, height: 135 },
             xAxis: { type: 'category', data: datos.map(t => t.tanque), show: false },
             yAxis: { type: 'value', min: 0, max: capMax, show: false },
             series: [{

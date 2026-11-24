@@ -330,25 +330,31 @@
         CHARTS.length = 0;
 
         // GAS
-        cargarSiExiste(CargarGasKpiCumplimiento, 'dotGasCumplimiento',
+        cargarSiExiste(CargarGasKpi1Cumplimiento, 'dotGasCumplimiento',
             fechaStr);
 
-        cargarSiExiste(CargarOleKpiCumplimiento, 'dotOleCumplimiento',
-            fechaStr);
-
-        cargarSiExiste(CargarPolKpiCumplimiento, 'dotPolKpiCumplimiento',
-            fechaStr);
-
-        cargarSiExiste(CargarOleKpiEntregasCrudo, 'dotOleKpiEntregasCrudo',
+        cargarSiExiste(CargarOleKpi1Cumplimiento, 'dotOleCumplimiento',
             fechaStr);
         
-        cargarSiExiste(CargarOleKpiEntregasGlp, 'dotOleKpiEntregasGlp',
+        cargarSiExiste(CargarPolKpi1Cumplimiento, 'dotPolCumplimiento',
+            fechaStr);
+
+        cargarSiExiste(CargarPolKpi2Cumplimiento, 'dotPolKpiCumplimiento',
+            fechaStr);
+
+        cargarSiExiste(CargarOleKpi2EntregasCrudo, 'dotOleKpiEntregasCrudo',
+            fechaStr);
+        
+        cargarSiExiste(CargarOleKpi2EntregasGlp, 'dotOleKpiEntregasGlp',
+            fechaStr);
+
+        cargarSiExiste(CargarGasKpi3TransporteXEmpresa, 'tpCards',
             fechaStr);
 
         cargarSiExiste(CargarGasEntregasPlantas, 'chartGasEntregasPlantas',
             TEMA_DASHBOARD,
             'Proceso y Consumo Plantas',
-            'Participación Ejecutada por Planta', 'MMpc', fechaStr);
+            'Participación Ejecutada por Planta', 'MMpcd', fechaStr);
 
         cargarSiExiste(CargarGasConsumoTermoelectricas, 'chartGasConsumoXTermoelectrica',
             TEMA_DASHBOARD,
@@ -425,6 +431,17 @@
             TEMA_DASHBOARD,
             '% Uso Diario - Sistemas Oleoductos',
             'Capacidad utilizada', 'MMm3', fechaStr);
+
+        // POL
+        cargarSiExiste(CargarPolRecepciones, 'chartPolRecepciones',
+            TEMA_DASHBOARD,
+            'Recepciones',
+            'PCOLP-1/2, PCPV, PSCZ-1, PCS, PSP, PVT', 'MMpc', fechaStr);
+
+        cargarSiExiste(CargarPolEntregas, 'chartPolEntregas',
+            TEMA_DASHBOARD,
+            'Entregas',
+            'Senkata, Oruro, P.Villarroel, Chorety, Q.Qhora, Potosi, Tarija', 'MMpc', fechaStr);
 
         // PERFILES
         cargarSiExiste(CargarPerfil, 'chartOSSA1',
@@ -545,7 +562,7 @@
     function guardarLayout() {
         // save(false) = solo posiciones/tamaños (sin contenido HTML)
         var layout = GRID_PRINCIPAL.save(false);
-        console.log(layout);
+        //console.log(layout);
         try {
             localStorage.setItem(PREFIJO_LAYOUT + LAYOUT_ACTUAL, JSON.stringify(layout));
         } catch (error) {
@@ -756,8 +773,8 @@
             ]);
 
             TEMA_DASHBOARD = localStorage.getItem('tema');
-            console.log("TEMA_DASHBOARD:", TEMA_DASHBOARD);
-            console.log("TEMAS[TEMA_DASHBOARD]:", TEMAS[TEMA_DASHBOARD]);
+            //console.log("TEMA_DASHBOARD:", TEMA_DASHBOARD);
+            //console.log("TEMAS[TEMA_DASHBOARD]:", TEMAS[TEMA_DASHBOARD]);
 
 
             if (TEMA_DASHBOARD == null || TEMAS[TEMA_DASHBOARD] == null) {

@@ -33,6 +33,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGasCumplimientoService, GasCumplimientoService>();
         services.AddScoped<IOleKpiService, OleKpiService>();
         services.AddScoped<IPolKpiService, PolKpiService>();
+        services.AddScoped<IPolRecepcionesService, PolRecepcionesService>();
+        services.AddScoped<IPolEntregasService, PolEntregasService>();
 
         return services;
     }

@@ -17,21 +17,15 @@ public class GasTransporteXEmpresaService : IGasTransporteXEmpresaService
     public async Task<object> ObtenerPorFechaAsync(DateOnly fecha)
     {
 
-        var sistema = new List<string>();
-        var programado = new List<double>();
-        var ejecutado = new List<double>();
-        var hoy = new List<double>();
-
-        var cantidad_datos = 0;
-
-
+        var resultado = new List<object>();
 
         const string sql = @"
                 SELECT 
                     sistema,
                     ROUND(ISNULL(programado, 0), 2) AS programado,
                     ROUND(ISNULL(ejecutado, 0), 2) AS ejecutado,
-                    ROUND(ISNULL(hoy, 0), 2) AS hoy
+                    ROUND(ISNULL(hoy, 0), 2) AS hoy,
+                    ROUND(ISNULL(((ejecutado - programado) / programado) * 100, 0), 2) AS cumplimiento
                 FROM gas_transporte_empresas
                 WHERE CAST(fecha AS DATE) = @fechaFiltro
                 ORDER BY ejecutado ASC";
@@ -47,22 +41,15 @@ public class GasTransporteXEmpresaService : IGasTransporteXEmpresaService
 
         while (await lector.ReadAsync())
         {
-            sistema.Add(lector.GetStringOrEmpty("sistema"));
-            programado.Add(lector.GetRequiredDouble("programado"));
-            ejecutado.Add(lector.GetRequiredDouble("ejecutado"));
-            hoy.Add(lector.GetRequiredDouble("hoy"));
-            cantidad_datos = cantidad_datos + 1;
-
-        }
-
-        var resultado = new
+            resultado.Add(new
             {
-                sistema,
-                programado,
-                ejecutado,
-                hoy,
-                cantidad_datos
-            };
+                sistema = lector.GetStringOrEmpty("sistema"),
+                programado = lector.GetRequiredDouble("programado"),
+                ejecutado = lector.GetRequiredDouble("ejecutado"),
+                hoy = lector.GetRequiredDouble("hoy"),
+                cumplimiento = lector.GetRequiredDouble("cumplimiento")
+            });
+        }
 
         return resultado;
     }

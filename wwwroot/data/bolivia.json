@@ -2129,7 +2129,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "BOL", 
-        "name": "LPZ"
+        "name": "La Paz"
       }, 
       "id": 1
     }, 
@@ -2937,7 +2937,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "BOO", 
-        "name": "OR"
+        "name": "Oruro"
       }, 
       "id": 2
     }, 
@@ -5117,7 +5117,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "BOP", 
-        "name": "POT"
+        "name": "Potosi"
       }, 
       "id": 3
     }, 
@@ -6437,7 +6437,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "BOT", 
-        "name": "TJA"
+        "name": "Tarija"
       }, 
       "id": 4
     }, 
@@ -8901,7 +8901,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "BOS", 
-        "name": "SCZ"
+        "name": "Santa Cruz"
       }, 
       "id": 5
     }, 
@@ -11041,7 +11041,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "BOH", 
-        "name": "SCRE"
+        "name": "Chuquisaca"
       }, 
       "id": 6
     }, 
@@ -17161,7 +17161,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "BOC", 
-        "name": "CBBA"
+        "name": "Cochabamba"
       }, 
       "id": 9
     }

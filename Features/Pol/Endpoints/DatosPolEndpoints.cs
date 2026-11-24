@@ -28,5 +28,15 @@ public static class DatosPolEndpoints
         {
             return Results.Ok(await servicio.ObtenerCumplimientoAyerAsync(fecha));
         });
+
+        grupo.MapGet("/recepciones", async (DateOnly fecha, IPolRecepcionesService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
+
+        grupo.MapGet("/entregas", async (DateOnly fecha, IPolEntregasService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
     }
 }

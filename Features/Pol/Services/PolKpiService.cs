@@ -89,8 +89,8 @@ public class PolKpiService : IPolKpiService
 
         while (await lector.ReadAsync())
         {
-            total_recepciones = lector.GetRequiredInt32("total_recepciones");
-            recepciones_mayor_a = lector.GetRequiredInt32("recepciones_mayor_a");
+            total_recepciones = lector.GetInt32OrDefault("total_recepciones", 0);
+            recepciones_mayor_a = lector.GetInt32OrDefault("recepciones_mayor_a", 0);
             cantidad_datos++;
         }
 
@@ -134,8 +134,8 @@ public class PolKpiService : IPolKpiService
 
         while (await lector.ReadAsync())
         {
-            total_entregas = lector.GetRequiredInt32("total_entregas");
-            entregas_mayor_a = lector.GetRequiredInt32("entregas_mayor_a");
+            total_entregas = lector.GetInt32OrDefault("total_entregas", 0);
+            entregas_mayor_a = lector.GetInt32OrDefault("entregas_mayor_a", 0);
             cantidad_datos++;
         }
 
