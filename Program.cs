@@ -1,5 +1,6 @@
 using Dashboard.Features.DataImport.Endpoints;
 using Dashboard.Features.Gas.Endpoints;
+using Dashboard.Features.Generic.Endpoints;
 using Dashboard.Features.Ole.Endpoints;
 using Dashboard.Features.Profiles.Endpoints;
 using Dashboard.Extensions;
@@ -15,6 +16,7 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.MapDatosGasEndpoints();
+app.MapDatosGenericEndpoints();
 app.MapDatosOleEndpoints();
 app.MapDatosPolEndpoints();
 app.MapCargarDatosEndpoints();

@@ -217,7 +217,7 @@
                         },
                         { gridIndex: 1, type: 'value', min: 0, max: 1, show: false }
                     ],
-                    dataZoom: [{ type: 'inside', xAxisIndex: [0, 1], filterMode: 'none' }],
+                    // dataZoom: [{ type: 'inside', xAxisIndex: [0, 1], filterMode: 'none' }],
 
                     // IMPORTANTE: seriePerfil debe ir primero (seriesIndex 0 del visualMap)
                     series: [seriesPerfil, seriesEstaciones, seriesLotes, ...seriesLeyenda]

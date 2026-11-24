@@ -393,3 +393,92 @@ async function CargarGasKpi3TransporteXEmpresa(nombreDOM, fechaStr) {
         alert("Ocurrió un error: " + error);
     }
 }
+
+async function CargarNovedades(nombreDOM, fechaStr, tipoLeyenda) {
+
+    try {
+
+        let objDOM = document.getElementById(nombreDOM);
+        let contenido = objDOM.querySelector('.tm-label');
+
+        //console.log(contenido);
+
+        let res = await fetch('api/generic/leyendas?fecha=' + fechaStr + '&tipo_leyenda=' + tipoLeyenda);
+        //console.log(res);
+        //console.log(res.status);
+        let dataOriginal = await res.json();
+
+        //console.log(dataOriginal);
+
+        if (dataOriginal.cantidad_datos > 0) {
+            let textoSeguro = document.createElement('span');
+            contenido.innerHTML = dataOriginal.contenido
+                .split(/<\/div\s*>|<\/?br\s*\/?>/gi)
+                .map(linea => {
+                    textoSeguro.textContent = linea;
+                    return textoSeguro.innerHTML;
+                })
+                .join('<br>');
+
+        } else {
+            contenido.innerText = "Sin Datos";
+        }
+
+        
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+}
+
+async function CargarEstadoPuerto(nombreDOM, fechaStr) {
+
+    try {
+
+        let objDOM = document.getElementById(nombreDOM);
+        let contenido = objDOM.querySelector('.tm-label');
+
+        //console.log(contenido);
+
+        let res = await fetch('api/generic/leyendas?fecha=' + fechaStr + '&tipo_leyenda=estado_puerto');
+        //console.log(res);
+        //console.log(res.status);
+        let dataOriginal = await res.json();
+
+        //console.log(dataOriginal);
+
+        if (dataOriginal.cantidad_datos > 0) {
+
+            if (dataOriginal.contenido.includes("CERRADO")) {
+                objDOM.classList.add("color-red");
+                objDOM.classList.remove("color-green");
+            } else {
+                objDOM.classList.add("color-green");
+                objDOM.classList.remove("color-red");
+            }
+
+            let textoSeguro = document.createElement('span');
+            contenido.innerHTML = dataOriginal.contenido
+                .split(/<\/div\s*>|<\/?br\s*\/?>/gi)
+                .map(linea => {
+                    textoSeguro.textContent = linea;
+                    return textoSeguro.innerHTML;
+                })
+                .join('<br>');
+
+        } else {
+            contenido.innerText = "Sin Datos";
+            objDOM.classList.add("color-green");
+            objDOM.classList.remove("color-red");
+        }
+
+        
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+}

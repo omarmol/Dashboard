@@ -1,5 +1,6 @@
 using Dashboard.Features.DataImport.Services;
 using Dashboard.Features.Gas.Services;
+using Dashboard.Features.Generic.Services;
 using Dashboard.Features.Ole.Services;
 using Dashboard.Features.Pol.Services;
 using Dashboard.Features.Profiles.Services;
@@ -35,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPolKpiService, PolKpiService>();
         services.AddScoped<IPolRecepcionesService, PolRecepcionesService>();
         services.AddScoped<IPolEntregasService, PolEntregasService>();
+        services.AddScoped<ILeyendasService, LeyendasService>();
 
         return services;
     }

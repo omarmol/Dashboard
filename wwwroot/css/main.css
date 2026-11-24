@@ -698,17 +698,18 @@ button.pestana {
     /*background: #fff;
     border-radius: 14px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, .08);*/
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    /* font-family: 'Inter', 'Segoe UI', Arial, sans-serif; */
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
 .dc-title {
-    margin: 0 0 10px;
-    font-size: 20px;
+    margin: 0;
+    font-size: 18px;
     font-weight: 700;
-    color: #0f2133;
+    /* color: #0f2133; */
+    margin-bottom: 14px;
 }
 
 /* Fila única: las tarjetas crecen hacia la derecha y, si no caben, hay scroll horizontal */
@@ -742,19 +743,20 @@ button.pestana {
     height: 52px;
     display: flex;
     justify-content: center;
+    padding-top: 6px;
 }
 
     .dc-truck svg {
-        height: 100%;
+        height: 80%;
         width: auto;
     }
 
 .dc-label {
-    font-family: 'Consolas', 'Courier New', monospace;
+    /* font-family: 'Consolas', 'Courier New', monospace; */
     font-size: 15px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #6b7785;
+    /* color: #6b7785; */
     margin-top: 4px;
     white-space: nowrap;
     overflow: hidden;
@@ -771,29 +773,29 @@ button.pestana {
     .dc-count .num {
         font-size: 38px;
         font-weight: 800;
-        color: #0f2133;
+        /* color: #0f2133; */
         line-height: 1.1;
     }
 
     .dc-count .unit {
-        font-family: 'Consolas', 'Courier New', monospace;
+        /* font-family: 'Consolas', 'Courier New', monospace; */
         font-size: 15px;
         font-weight: 700;
-        color: #3d4a59;
+        /* color: #3d4a59; */
     }
 
 .dc-volume {
     margin-top: auto;
     padding-top: 6px;
     border-top: 1px solid #e3e7ec;
-    font-family: 'Consolas', 'Courier New', monospace;
+    /* font-family: 'Consolas', 'Courier New', monospace; */
     font-size: 12px;
-    color: #6b7785;
+    /* color: #6b7785; */
 }
 
-    .dc-volume b {
+    /* .dc-volume b {
         color: #0f2133;
-    }
+    } */
 
 
 
@@ -924,18 +926,38 @@ button.pestana {
 
 
 .tm-panel {
-    --accent: #0a8091;
+    /* --accent: #0a8091; */
     /*height: 100%;*/
-    padding: 14px 20px 16px;
+    padding: 12px 12px 12px;
     box-sizing: border-box;
-    border: 1px solid var(--accent);
+    /* border: 1px solid var(--accent); */
     /*border-radius: 14px;*/
     /* Degradado turquesa arriba que se funde con el blanco */
-    background: linear-gradient(180deg, #d3eef3 0%, #ffffff 55%);
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    /* background: linear-gradient(180deg, #d3eef3 0%, #ffffff 55%); */
+    /* font-family: 'Inter', 'Segoe UI', Arial, sans-serif; */
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+.tm-panel.color-turquoise {
+    background: linear-gradient(180deg, #d3eef3 0%, #ffffff 55%);
+}
+
+.tm-panel.color-red {
+    background: linear-gradient(180deg, #e4a0a0 0%, #ffffff 55%);
+}
+
+.tm-panel.color-green {
+    background: linear-gradient(180deg, #b4e7a8 0%, #ffffff 55%);
+}
+
+.tm-panel.color-orange {
+    background: linear-gradient(180deg, #ecc17d 0%, #ffffff 55%);
+}
+
+.tm-panel.color-blue {
+    background: linear-gradient(180deg, #8a9ef0 0%, #ffffff 55%);
 }
 
 /* ---------- Encabezado ---------- */
@@ -950,7 +972,7 @@ button.pestana {
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-    color: var(--accent);
+    /* color: var(--accent); */
     line-height: 1.2;
 }
 
@@ -961,13 +983,21 @@ button.pestana {
 }
 
 .tm-badge {
-    font-family: 'Consolas', 'Courier New', monospace;
+    /* font-family: 'Consolas', 'Courier New', monospace;
     font-size: 11px;
     letter-spacing: 1px;
     color: #6b7785;
     padding: 2px 12px;
     border-radius: 12px;
     background: rgba(255, 255, 255, .75);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08); */
+
+    font-size: 12px;
+    color: #6b7785;
+    padding: 3px 14px;
+    border: 1px solid #d9dde3;
+    border-radius: 14px;
+    background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
 }
 
@@ -990,7 +1020,7 @@ button.pestana {
 
 .tm-label {
     color: #6b7785;
-    white-space: nowrap;
+    /* white-space: nowrap; */
 }
 
 .tm-value {

@@ -466,6 +466,13 @@
         cargarSiExiste(CargarImagenOleaje, 'imgOleaje', fechaStr);
 
 
+        cargarSiExiste(CargarNovedades, 'dot-novedades-gasoductos', fechaStr, 'gasoducto');
+        cargarSiExiste(CargarNovedades, 'dot-novedades-oleoductos', fechaStr, 'oleoducto');
+        cargarSiExiste(CargarNovedades, 'dot-novedades-poliductos', fechaStr, 'poliducto');
+
+        cargarSiExiste(CargarEstadoPuerto, 'dot-estado-puerto', fechaStr);
+
+
         GRID_PRINCIPAL.on('resizestop', function () {
             CHARTS.forEach((localChart, indice) => {
                 localChart.resize();

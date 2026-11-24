@@ -105,7 +105,13 @@ public class CargarExcelService : ICargarExcelService
                 })
             ])
         ]),
-        new("leyendas", [])
+        new("leyendas",
+        [
+            FuenteLeyenda("C2", "oleoducto"),
+            FuenteLeyenda("M3", "estado_puerto"),
+            FuenteLeyenda("BG2", "gasoducto"),
+            FuenteLeyenda("DO2", "poliducto")
+        ])
     ];
 
     private readonly ILogger<CargarExcelService> _log;
@@ -268,7 +274,15 @@ public class CargarExcelService : ICargarExcelService
             {
                 var imagen = hoja.Pictures.FirstOrDefault();
                 if (imagen is not null)
-                    resultado.Add(fuente.Columnas.Select(columna => columna.Leer(null, imagen)).ToArray());
+                    resultado.Add(fuente.Columnas.Select(columna => columna.Leer(null, imagen, null)).ToArray());
+
+                continue;
+            }
+
+            if (fuente.CeldaExcel is not null)
+            {
+                var celda = hoja.Cell(fuente.CeldaExcel);
+                resultado.Add(fuente.Columnas.Select(columna => columna.Leer(null, null, celda)).ToArray());
 
                 continue;
             }
@@ -284,7 +298,7 @@ public class CargarExcelService : ICargarExcelService
                     columna.Obligatoria && fila.Field(columna.NombreExcel!).IsEmpty()))
                     continue;
 
-                resultado.Add(fuente.Columnas.Select(columna => columna.Leer(fila, null)).ToArray());
+                resultado.Add(fuente.Columnas.Select(columna => columna.Leer(fila, null, null)).ToArray());
             }
         }
 
@@ -308,7 +322,7 @@ public class CargarExcelService : ICargarExcelService
 
         foreach (var fuente in tabla.Fuentes)
         {
-            if ((!fuente.EsImagen && string.IsNullOrWhiteSpace(fuente.NombreExcel))
+            if ((!fuente.EsImagen && fuente.CeldaExcel is null && string.IsNullOrWhiteSpace(fuente.NombreExcel))
                 || !fuente.Columnas.Select(columna => columna.Destino).SequenceEqual(nombres, StringComparer.OrdinalIgnoreCase))
                 throw new InvalidOperationException($"Las fuentes de {tabla.Destino} deben tener las mismas columnas de destino y en el mismo orden.");
         }
@@ -322,23 +336,31 @@ public class CargarExcelService : ICargarExcelService
     private static ConfiguracionFuente FuenteImagenes(ConfiguracionColumna[] columnas) =>
         new(null, true, columnas);
 
+    private static ConfiguracionFuente FuenteLeyenda(string celdaExcel, string tipo) =>
+        new(null, false,
+        [
+            Constante("tipo_leyenda", tipo),
+            new("contenido", null, false, (_, _, celda) =>
+                LeerTexto(celda!).Replace("\r\n", "</br>").Replace("\r", "</br>").Replace("\n", "</br>"))
+        ], celdaExcel);
+
     private static ConfiguracionColumna Texto(string destino, string nombreExcel, bool obligatoria = true) =>
-        new(destino, nombreExcel, obligatoria, (fila, _) => LeerTexto(fila!, nombreExcel));
+        new(destino, nombreExcel, obligatoria, (fila, _, _) => LeerTexto(fila!, nombreExcel));
 
     private static ConfiguracionColumna Entero(string destino, string nombreExcel, bool obligatoria = true) =>
-        new(destino, nombreExcel, obligatoria, (fila, _) => LeerNumero<int>(fila!, nombreExcel, obligatoria));
+        new(destino, nombreExcel, obligatoria, (fila, _, _) => LeerNumero<int>(fila!, nombreExcel, obligatoria));
 
     private static ConfiguracionColumna Numero(string destino, string nombreExcel, bool obligatoria = true) =>
-        new(destino, nombreExcel, obligatoria, (fila, _) => LeerNumero<double>(fila!, nombreExcel, obligatoria));
+        new(destino, nombreExcel, obligatoria, (fila, _, _) => LeerNumero<double>(fila!, nombreExcel, obligatoria));
 
     private static ConfiguracionColumna Constante(string destino, string valor) =>
-        new(destino, null, false, (_, _) => valor);
+        new(destino, null, false, (_, _, _) => valor);
 
     private static ConfiguracionColumna ColumnaImagen(string destino, Func<IXLPicture, string> leer) =>
-        new(destino, null, false, (_, imagen) => leer(imagen!));
+        new(destino, null, false, (_, imagen, _) => leer(imagen!));
 
     private static ConfiguracionColumna Posicion(string? codigo, double valorCodigo) =>
-        new("posicion", "Posicion", true, (fila, _) =>
+        new("posicion", "Posicion", true, (fila, _, _) =>
         {
             var celda = fila!.Field("Posicion");
             if (celda.TryGetValue<double>(out var valor))
@@ -395,13 +417,19 @@ public class CargarExcelService : ICargarExcelService
     private static string LeerTexto(IXLTableRow fila, string columna)
     {
         var celda = fila.Field(columna);
+        return LeerTexto(celda, columna);
+    }
+
+    private static string LeerTexto(IXLCell celda, string? columna = null)
+    {
         if (celda.IsEmpty())
             return string.Empty;
 
         if (celda.TryGetValue<string>(out var valor))
             return valor;
 
-        throw new InvalidOperationException($"El valor de la celda {celda.Address} de '{columna}' no es texto válido.");
+        var contexto = columna is null ? "" : $" de '{columna}'";
+        throw new InvalidOperationException($"El valor de la celda {celda.Address}{contexto} no es texto válido.");
     }
 
     private static T LeerNumero<T>(IXLTableRow fila, string columna, bool obligatoria) where T : struct
@@ -417,10 +445,11 @@ public class CargarExcelService : ICargarExcelService
     }
 
     private sealed record ConfiguracionTabla(string Destino, ConfiguracionFuente[] Fuentes);
-    private sealed record ConfiguracionFuente(string? NombreExcel, bool EsImagen, ConfiguracionColumna[] Columnas);
+    private sealed record ConfiguracionFuente(
+        string? NombreExcel, bool EsImagen, ConfiguracionColumna[] Columnas, string? CeldaExcel = null);
     private sealed record ConfiguracionColumna(
         string Destino,
         string? NombreExcel,
         bool Obligatoria,
-        Func<IXLTableRow?, IXLPicture?, object> Leer);
+        Func<IXLTableRow?, IXLPicture?, IXLCell?, object> Leer);
 }
