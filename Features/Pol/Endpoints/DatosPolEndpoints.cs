@@ -14,14 +14,14 @@ public static class DatosPolEndpoints
             return Results.Ok(await servicio.ObtenerCumplimientoAsync(fecha));
         });
 
-        grupo.MapGet("/cumplimiento-recepciones", async (DateOnly fecha, IPolKpiService servicio) =>
+        grupo.MapGet("/kpi-cumplimiento-recepciones", async (DateOnly fecha, IPolKpiService servicio) =>
         {
-            return Results.Ok(await servicio.ObtenerCumplimientoRecepcionesAsync(fecha));
+            return Results.Ok(await servicio.ObtenerKpiCumplimientoRecepcionesAsync(fecha));
         });
 
-        grupo.MapGet("/cumplimiento-entregas", async (DateOnly fecha, IPolKpiService servicio) =>
+        grupo.MapGet("/kpi-cumplimiento-entregas", async (DateOnly fecha, IPolKpiService servicio) =>
         {
-            return Results.Ok(await servicio.ObtenerCumplimientoEntregasAsync(fecha));
+            return Results.Ok(await servicio.ObtenerKpiCumplimientoEntregasAsync(fecha));
         });
 
         grupo.MapGet("/cumplimiento-ayer", async (DateOnly fecha, IPolKpiService servicio) =>
@@ -35,6 +35,16 @@ public static class DatosPolEndpoints
         });
 
         grupo.MapGet("/entregas", async (DateOnly fecha, IPolEntregasService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
+
+        grupo.MapGet("/cumplimiento-entregas", async (DateOnly fecha, IPolCumplimientoService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
+
+        grupo.MapGet("/capacidad", async (DateOnly fecha, IPolCapacidadService servicio) =>
         {
             return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
         });

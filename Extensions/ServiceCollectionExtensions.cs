@@ -37,6 +37,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPolRecepcionesService, PolRecepcionesService>();
         services.AddScoped<IPolEntregasService, PolEntregasService>();
         services.AddScoped<ILeyendasService, LeyendasService>();
+        services.AddScoped<IOleBarcosAricaService, OleBarcosAricaService>();
+        services.AddScoped<IPolCumplimientoService, PolCumplimientoService>();
+        services.AddScoped<IPolCapacidadService, PolCapacidadService>();    
+
 
         return services;
     }

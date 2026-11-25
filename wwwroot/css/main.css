@@ -692,6 +692,70 @@ button.pestana {
 }
 
 
+/* Grilla Detalle Proveedor -> Cliente */
+#domDetalleProveedorCliente { overflow: auto; }
+
+.dpc-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+    .dpc-tabla th {
+        text-align: left;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #6b7785;
+        padding: 8px 10px;
+        border-bottom: 1px solid #d9dde3;
+    }
+
+    .dpc-tabla td {
+        padding: 10px;
+        border-bottom: 1px solid #e3e7ec;
+        font-weight: 600;
+    }
+
+    .dpc-tabla .num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+.dpc-punto {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+    .dpc-punto.prov { background: #2563eb; }
+    .dpc-punto.cli { background: #16a07a; }
+
+.dpc-sin { color: #6b7785; font-weight: 400; }
+
+.dpc-part {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dpc-barra {
+    width: 60px;
+    height: 6px;
+    background: #e5e9f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+    .dpc-barra div {
+        height: 100%;
+        background: #2563eb;
+    }
+
+.dpc-vacio { padding: 20px; color: #6b7785; }
+
 .dc-panel {
     height: 100%;
     /*padding: 16px 20px;*/

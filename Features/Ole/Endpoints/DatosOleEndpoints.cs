@@ -57,5 +57,10 @@ public static class DatosOleEndpoints
         {
             return Results.Ok(await servicio.ObtenerCumplimientoAsync(fecha));
         });
+
+        grupo.MapGet("/barcos-arica", async (DateOnly fecha, IOleBarcosAricaService servicio) =>
+        {
+            return Results.Ok(await servicio.ObtenerPorFechaAsync(fecha));
+        });
     }
 }

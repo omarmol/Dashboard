@@ -292,5 +292,12 @@
         "id": "gi-com-transito-resumen",
         "x": 0,
         "y": 128
+    },
+    {
+        "w": 12,
+        "h": 10,
+        "id": "gi-com-detalle-proveedor-cliente",
+        "x": 0,
+        "y": 150
     }
 ]

@@ -61,7 +61,7 @@ public class PolKpiService : IPolKpiService
     }
 
 
-    public async Task<object> ObtenerCumplimientoRecepcionesAsync(DateOnly fecha)
+    public async Task<object> ObtenerKpiCumplimientoRecepcionesAsync(DateOnly fecha)
     {
 
         var cantidad_datos = 0; 
@@ -106,7 +106,7 @@ public class PolKpiService : IPolKpiService
     }
 
 
-    public async Task<object> ObtenerCumplimientoEntregasAsync(DateOnly fecha)
+    public async Task<object> ObtenerKpiCumplimientoEntregasAsync(DateOnly fecha)
     {
 
         var cantidad_datos = 0; 

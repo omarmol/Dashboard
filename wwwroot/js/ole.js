@@ -1,3 +1,59 @@
+const solicitudesBarcosArica = new WeakMap();
+
+async function CargarOleBarcosArica(nombreDOM, fechaStr) {
+    const contenedor = document.getElementById(nombreDOM);
+    const solicitud = {};
+    solicitudesBarcosArica.set(contenedor, solicitud);
+
+    function mostrarMensaje(texto) {
+        const fila = document.createElement('div');
+        fila.className = 'tm-row';
+        const etiqueta = document.createElement('span');
+        etiqueta.className = 'tm-label';
+        etiqueta.textContent = texto;
+        fila.appendChild(etiqueta);
+        contenedor.replaceChildren(fila);
+    }
+
+    mostrarMensaje('Cargando barcos...');
+
+    try {
+        const respuesta = await fetch('api/ole/barcos-arica?fecha=' + encodeURIComponent(fechaStr));
+        if (!respuesta.ok) {
+            throw new Error('Error al consultar barcos de Arica: HTTP ' + respuesta.status);
+        }
+
+        const datos = await respuesta.json();
+        if (solicitudesBarcosArica.get(contenedor) !== solicitud) return;
+
+        if (datos.oleBarcosArica.length === 0) {
+            mostrarMensaje('No hay barcos a la gira para esta fecha.');
+            return;
+        }
+
+        const filas = datos.oleBarcosArica.map(barco => {
+            const fila = document.createElement('div');
+            fila.className = 'tm-row';
+
+            const etiqueta = document.createElement('span');
+            etiqueta.className = 'tm-label';
+            etiqueta.textContent = [barco.barco, barco.producto].filter(Boolean).join(' · ');
+
+            const valor = document.createElement('span');
+            valor.className = 'tm-value';
+            valor.textContent = '';
+
+            fila.append(etiqueta, valor);
+            return fila;
+        });
+        contenedor.replaceChildren(...filas);
+    } catch (error) {
+        if (solicitudesBarcosArica.get(contenedor) !== solicitud) return;
+        mostrarMensaje('No se pudieron cargar los barcos.');
+        console.error('Error al cargar barcos de Arica:', error);
+    }
+}
+
 async function CargarImagenOleaje(nombreDOM, fechaStr) {
 
     try {
@@ -320,7 +376,15 @@ async function CargarOleCapacidad(nombreDOM, tema, titulo, subTitulo, unidadMedi
 
         let series = [];
 
-        series.push({ name: 'Porcentaje Uso', type: 'bar', colorBy: 'data', data: dataOriginal.porcentaje_uso });
+        series.push({ 
+            name: 'Porcentaje Uso', 
+            type: 'bar', 
+            itemStyle: {
+                borderRadius: [2, 2, 0, 0],
+                color: params => params.value >= 90 ? '#e00817': params.value >= 60 && params.value < 90 ? '#d1802e' : '#84be4d'
+            },
+            colorBy: 'data', 
+            data: dataOriginal.porcentaje_uso });
 
         if (dataOriginal.cantidad_datos > 0) {
             GraficarBarrasHorizontales(eChart, dataOriginal.sistema, series, titulo, subTitulo, unidadMedida)

@@ -226,6 +226,53 @@ async function CargarGasTransitoResumen(nombreDOM, tema, titulo, subTitulo, unid
 
 }
 
+async function CargarGasDetalleProveedorCliente(nombreDOM, fechaStr) {
+
+    try {
+        let objDOM = document.getElementById(nombreDOM);
+
+        let res = await fetch('api/gas/transito-resumen?fecha=' + fechaStr + '');
+        let dataOriginal = await res.json();
+
+        if (dataOriginal.cantidad_datos <= 0) {
+            objDOM.innerHTML = '<div class="dpc-vacio">Sin datos</div>';
+            return;
+        }
+
+        const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const num = v => Number(v).toLocaleString('es-BO', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        const pct = v => Number(v).toLocaleString('es-BO', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+
+        let filas = '';
+        for (let i = 0; i < dataOriginal.cantidad_datos; i++) {
+            const cliente = dataOriginal.cliente[i];
+            const participacion = dataOriginal.porcentaje_participacion[i];
+            const ancho = Math.max(0, Math.min(100, participacion));
+
+            filas += '<tr>' +
+                '<td><span class="dpc-punto prov"></span>' + esc(dataOriginal.proveedor[i]) + '</td>' +
+                '<td>' + (cliente ? '<span class="dpc-punto cli"></span>' + esc(cliente) : '<span class="dpc-sin">— sin despacho —</span>') + '</td>' +
+                '<td><div class="dpc-part"><div class="dpc-barra"><div style="width:' + ancho + '%"></div></div><span>' + pct(participacion) + '</span></div></td>' +
+                '<td class="num">' + num(dataOriginal.programado[i]) + '</td>' +
+                '<td class="num">' + num(dataOriginal.ejecutado[i]) + '</td>' +
+                '<td class="num">' + num(dataOriginal.hoy[i]) + '</td>' +
+                '<td class="num">' + num(dataOriginal.entrega_mutun[i]) + '</td>' +
+                '</tr>';
+        }
+
+        objDOM.innerHTML =
+            '<table class="dpc-tabla"><thead><tr>' +
+            '<th>Proveedor</th><th>Cliente</th><th>% Particip.</th>' +
+            '<th class="num">Programado</th><th class="num">Ejecutado</th><th class="num">Prog. Hoy</th><th class="num">Entrega Mutún</th>' +
+            '</tr></thead><tbody>' + filas + '</tbody></table>';
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+
+}
+
 async function CargarGasUsoDiario(nombreDOM, tema, titulo, subTitulo, unidadMedida, fechaStr) {
 
     try {
@@ -238,7 +285,15 @@ async function CargarGasUsoDiario(nombreDOM, tema, titulo, subTitulo, unidadMedi
 
         let series = [];
 
-        series.push({ name: 'Porcentaje Uso', type: 'bar', colorBy: 'data', data: dataOriginal.porcentaje_uso });
+        series.push({ 
+            name: 'Porcentaje Uso', 
+            type: 'bar', 
+            itemStyle: {
+                borderRadius: [2, 2, 0, 0],
+                color: params => params.value >= 90 ? '#e00817': params.value >= 60 && params.value < 90 ? '#d1802e' : '#84be4d'
+            },
+            // colorBy: 'data', 
+            data: dataOriginal.porcentaje_uso });
 
         if (dataOriginal.cantidad_datos > 0) {
             GraficarBarrasHorizontales(eChart, dataOriginal.sistema, series, titulo, subTitulo, unidadMedida)
@@ -309,7 +364,16 @@ async function CargarGasTransporteXSistema(nombreDOM, tema, titulo, subTitulo, u
 
         let series = [];
 
-        series.push({ name: 'Volumen', type: 'bar', colorBy: 'data', data: dataOriginal.ejecutado });
+        series.push({ 
+            name: 'Volumen', 
+            type: 'bar', 
+            itemStyle: {
+                borderRadius: [2, 2, 0, 0]
+            },
+            colorBy: 'data', 
+            data: dataOriginal.ejecutado });
+
+
 
         if (dataOriginal.cantidad_datos > 0) {
             GraficarBarrasHorizontales(eChart, dataOriginal.sistema, series, titulo, subTitulo, unidadMedida)

@@ -478,22 +478,7 @@
                     <span class="tm-badge">INFO</span>
                 </div>
 
-                <div class="tm-rows">
-                    <div class="tm-row">
-                        <span class="tm-label">Barco a la gira</span>
-                        <span class="tm-value">Hafnia Keftrel · DO</span>
-                    </div>
-
-                    <!-- Filas adicionales de ejemplo (puedes quitarlas) -->
-                    <div class="tm-row">
-                        <span class="tm-label">Barco a la gira</span>
-                        <span class="tm-value">Nave Ejemplo · GLP</span>
-                    </div>
-                    <div class="tm-row">
-                        <span class="tm-label">Barco a la gira</span>
-                        <span class="tm-value">Otra Nave · CR</span>
-                    </div>
-                </div>
+                <div class="tm-rows" id="ole-barcos-arica"></div>
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-arica-despacho-cisternas" gs-w="4" gs-h="6" tip="Arica">
@@ -592,12 +577,32 @@
         </div>
         <div class="grid-stack-item" gs-id="gi-pol-cumplimiento" gs-w="3" gs-h="9" tip="Poliductos">
             <div class="grid-stack-item-content">
-                <div id="chartPolCumplimiento" style="width: 100%; height: 100%;">% Cumplimiento Diario</div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">% Cumplimiento del día</h3>
+                            <div class="tp-subtitle">Ejecutado / Programado</div>
+                        </div>
+                        <span class="tp-unit">%</span>
+                    </div>
+                    <div id="chartPolCumplimiento" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
         <div class="grid-stack-item" gs-id="gi-pol-uso-diario" gs-w="3" gs-h="9" tip="Poliductos">
             <div class="grid-stack-item-content">
-                <div id="chartPolUsoDiario" style="width: 100%; height: 100%;">% Uso Diario</div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">% Uso Diario Poliductos</h3>
+                            <div class="tp-subtitle">Capacidad Utilizada</div>
+                        </div>
+                        <span class="tp-unit">%</span>
+                    </div>
+                    <div id="chartPolUsoDiario" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
 
@@ -720,6 +725,22 @@
         <div class="grid-stack-item" gs-id="gi-com-transito-resumen" gs-w="12" gs-h="12" tip="Comercial">
             <div class="grid-stack-item-content">
                 <div id="chartGasTransitoResumen" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-id="gi-com-detalle-proveedor-cliente" gs-w="12" gs-h="12" tip="Comercial">
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Detalle Proveedor -> Cliente</h3>
+                            <div class="tp-subtitle">Resumen gas en tránsito</div>
+                        </div>
+                        <span class="tp-unit">MMmcd</span>
+                    </div>
+                    <div id="domDetalleProveedorCliente" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
        

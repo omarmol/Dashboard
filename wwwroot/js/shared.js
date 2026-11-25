@@ -371,6 +371,8 @@
             'Flujo Argentina → Bolivia → Brasil',
             'Ancho del flujo proporcional al volumen', 'MMmcd', fechaStr);
 
+        cargarSiExiste(CargarGasDetalleProveedorCliente, 'domDetalleProveedorCliente', fechaStr);
+
         cargarSiExiste(CargarGasUsoDiario, 'chartGasCapacidad',
             TEMA_DASHBOARD,
             '% Uso Diario - Sistemas de Gas',
@@ -402,6 +404,8 @@
             '', 'MMpcd', fechaStr);
 
         // OLE
+        cargarSiExiste(CargarOleBarcosArica, 'ole-barcos-arica', fechaStr);
+
         cargarSiExiste(CargarOleTanquesArica, 'chartOleTanquesArica',
             TEMA_DASHBOARD,
             'Tanques de Almacenaje',
@@ -442,6 +446,16 @@
             TEMA_DASHBOARD,
             'Entregas',
             'Senkata, Oruro, P.Villarroel, Chorety, Q.Qhora, Potosi, Tarija', 'MMpc', fechaStr);
+
+        cargarSiExiste(CargarPolCumplimientoEntregas, 'chartPolCumplimiento',
+            TEMA_DASHBOARD,
+            '% Cumplimiento del día',
+            'Ejecutado / Programado', '%', fechaStr);
+
+        cargarSiExiste(CargarPolCapacidad, 'chartPolUsoDiario',
+            TEMA_DASHBOARD,
+            '% Uso Diario Poliductos',
+            'Capacidad Utilizada', '%', fechaStr);
 
         // PERFILES
         cargarSiExiste(CargarPerfil, 'chartOSSA1',
@@ -569,7 +583,7 @@
     function guardarLayout() {
         // save(false) = solo posiciones/tamaños (sin contenido HTML)
         var layout = GRID_PRINCIPAL.save(false);
-        //console.log(layout);
+        console.log(layout);
         try {
             localStorage.setItem(PREFIJO_LAYOUT + LAYOUT_ACTUAL, JSON.stringify(layout));
         } catch (error) {

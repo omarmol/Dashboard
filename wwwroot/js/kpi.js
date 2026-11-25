@@ -66,7 +66,7 @@ async function CargarPolKpi1Cumplimiento(nombreDOM, fechaStr) {
 
         let cumplimientoRecepciones = "";
 
-        let resCumplimientoRecepciones = await fetch('api/pol/cumplimiento-recepciones?fecha=' + fechaStr + '');
+        let resCumplimientoRecepciones = await fetch('api/pol/kpi-cumplimiento-recepciones?fecha=' + fechaStr + '');
         let dataOriginalCumplimientoRecepciones = await resCumplimientoRecepciones.json();
 
         cumplimientoRecepciones = "Recep. " + dataOriginalCumplimientoRecepciones.recepciones_mayor_a + "/" + dataOriginalCumplimientoRecepciones.total_recepciones;
@@ -74,7 +74,7 @@ async function CargarPolKpi1Cumplimiento(nombreDOM, fechaStr) {
 
         let cumplimientoEntregas = "";
 
-        let resCumplimientoEntregas = await fetch('api/pol/cumplimiento-entregas?fecha=' + fechaStr + '');
+        let resCumplimientoEntregas = await fetch('api/pol/kpi-cumplimiento-entregas?fecha=' + fechaStr + '');
         let dataOriginalCumplimientoEntregas = await resCumplimientoEntregas.json();
 
         cumplimientoEntregas = "Ent. " + dataOriginalCumplimientoEntregas.entregas_mayor_a + "/" + dataOriginalCumplimientoEntregas.total_entregas;
@@ -237,7 +237,7 @@ async function CargarPolKpi2Cumplimiento(nombreDOM, fechaStr) {
 
         let cumplimientoRecepciones = "";
 
-        let resCumplimientoRecepciones = await fetch('api/pol/cumplimiento-recepciones?fecha=' + fechaStr + '');
+        let resCumplimientoRecepciones = await fetch('api/pol/kpi-cumplimiento-recepciones?fecha=' + fechaStr + '');
         let dataOriginalCumplimientoRecepciones = await resCumplimientoRecepciones.json();
 
         cumplimientoRecepciones = "Recep. " + dataOriginalCumplimientoRecepciones.recepciones_mayor_a + "/" + dataOriginalCumplimientoRecepciones.total_recepciones;
@@ -245,7 +245,7 @@ async function CargarPolKpi2Cumplimiento(nombreDOM, fechaStr) {
 
         let cumplimientoEntregas = "";
 
-        let resCumplimientoEntregas = await fetch('api/pol/cumplimiento-entregas?fecha=' + fechaStr + '');
+        let resCumplimientoEntregas = await fetch('api/pol/kpi-cumplimiento-entregas?fecha=' + fechaStr + '');
         let dataOriginalCumplimientoEntregas = await resCumplimientoEntregas.json();
 
         cumplimientoEntregas = "Ent. " + dataOriginalCumplimientoEntregas.entregas_mayor_a + "/" + dataOriginalCumplimientoEntregas.total_entregas;
