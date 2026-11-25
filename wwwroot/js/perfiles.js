@@ -145,6 +145,8 @@
 
                 eChart.hideLoading();
 
+                eChart.resize();
+
                 CHARTS.push(eChart);
 
 

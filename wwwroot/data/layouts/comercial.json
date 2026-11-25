@@ -6,11 +6,39 @@
         "y": 120
     },
     {
+        "w": 3,
+        "id": "gi-com-item-volumen-ejecutado",
+        "h": 3,
+        "x": 0,
+        "y": 126
+    },
+    {
+        "w": 3,
+        "id": "gi-com-item-volumen-programado",
+        "h": 3,
+        "x": 3,
+        "y": 126
+    },
+    {
+        "w": 3,
+        "id": "gi-com-item-programado-hoy",
+        "h": 3,
+        "x": 6,
+        "y": 126
+    },
+    {
+        "w": 3,
+        "id": "gi-com-item-proveedores-activos",
+        "h": 3,
+        "x": 9,
+        "y": 126
+    },
+    {
         "w": 12,
         "h": 12,
         "id": "gi-com-transito-resumen",
         "x": 0,
-        "y": 121
+        "y": 128
     },
     {
         "w": 12,
@@ -18,5 +46,33 @@
         "id": "gi-com-detalle-proveedor-cliente",
         "x": 0,
         "y": 150
+    },
+    {
+        "w": 6,
+        "h": 8,
+        "id": "gi-com-ejecutado-proveedor",
+        "x": 0,
+        "y": 161
+    },
+    {
+        "w": 6,
+        "h": 8,
+        "id": "gi-com-ejecutado-cliente",
+        "x": 6,
+        "y": 161
+    },
+    {
+        "w": 6,
+        "h": 12,
+        "id": "gi-com-participacion-proveedor",
+        "x": 0,
+        "y": 170
+    },
+    {
+        "w": 6,
+        "h": 12,
+        "id": "gi-com-participacion-cliente",
+        "x": 6,
+        "y": 170
     }
 ]

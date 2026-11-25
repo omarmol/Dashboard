@@ -366,13 +366,6 @@
             'Exportación / Mercado Interno',
             'Por Mercado', 'MMpc', fechaStr);
 
-        cargarSiExiste(CargarGasTransitoResumen, 'chartGasTransitoResumen',
-            TEMA_DASHBOARD,
-            'Flujo Argentina → Bolivia → Brasil',
-            'Ancho del flujo proporcional al volumen', 'MMmcd', fechaStr);
-
-        cargarSiExiste(CargarGasDetalleProveedorCliente, 'domDetalleProveedorCliente', fechaStr);
-
         cargarSiExiste(CargarGasUsoDiario, 'chartGasCapacidad',
             TEMA_DASHBOARD,
             '% Uso Diario - Sistemas de Gas',
@@ -473,8 +466,24 @@
             'PCOLP-2',
             'Posición real (Km) por lote/interfase, sobre perfil de elevación', 'Km', fechaStr, 'PCOLP-2');
 
-        
+        cargarSiExiste(CargarPerfil, 'chartPCS',
+            TEMA_DASHBOARD,
+            'PCS',
+            'Posición real (Km) por lote/interfase, sobre perfil de elevación', 'Km', fechaStr, 'PCS');
 
+        // COMERCIAL
+
+        cargarSiExiste(CargarGasTransitoResumen, 'chartGasTransitoResumen',
+            TEMA_DASHBOARD,
+            'Flujo Argentina → Bolivia → Brasil',
+            'Ancho del flujo proporcional al volumen', 'MMmcd', fechaStr);
+
+        cargarSiExiste(CargarGasDetalleProveedorCliente, 'domDetalleProveedorCliente', fechaStr);
+        cargarSiExiste(CargarGasVolumenEjecutadoXProveedor, 'domEjecutadoProveedor', TEMA_DASHBOARD, 'Volumen Ejecutado x Proveedor', 'Proveedores (Argentina)', 'MMmcd', fechaStr);
+        cargarSiExiste(CargarGasVolumenEjecutadoXCliente, 'domEjecutadoCliente', TEMA_DASHBOARD, 'Volumen Ejecutado x Cliente', 'Clientes (Brasil)', 'MMmcd', fechaStr);
+        
+        cargarSiExiste(CargarGasParticipacionXProveedor, 'domParticipacionProveedor', TEMA_DASHBOARD, 'Participación x Proveedor', 'Proveedores (Argentina)', '%', fechaStr);
+        cargarSiExiste(CargarGasParticipacionXCliente, 'domParticipacionCliente', TEMA_DASHBOARD, 'Participación x Cliente', 'Clientes (Brasil)', '%', fechaStr);
         // //CargarGasTransporteXSistema(fechaStr);
         // //imgOleaje
         cargarSiExiste(CargarImagenOleaje, 'imgOleaje', fechaStr);
@@ -785,12 +794,12 @@
 
 
             await Promise.all([
-                cargarTema('Bolivia', 'data/temas/bolivia.json'),
-                cargarTema('Santa Cruz', 'data/temas/santa-cruz.json'),
-                cargarTema('Default', 'data/temas/customized.json'),
-                cargarTema('Tema 2', 'data/temas/vintage.json'),
-                cargarTema('YPFBTR Claro', 'data/temas/ypfb-light1.json'),
-                cargarTema('YPFBTR Oscuro', 'data/temas/ypfb-dark.json')
+                // cargarTema('Bolivia', 'data/temas/bolivia.json'),
+                // cargarTema('Santa Cruz', 'data/temas/santa-cruz.json'),
+                // cargarTema('Default', 'data/temas/customized.json'),
+                // cargarTema('Tema 2', 'data/temas/vintage.json'),
+                cargarTema('YPFBTR Claro', 'data/temas/ypfb-light1.json')
+                // cargarTema('YPFBTR Oscuro', 'data/temas/ypfb-dark.json')
             ]);
 
             TEMA_DASHBOARD = localStorage.getItem('tema');

@@ -95,6 +95,77 @@ function GraficarTorta(objetoEcharts, datos, titulo, subTitulo, unidadMedida) {
     }
 }
 
+function GraficarDonut(objetoEcharts, datos, titulo, subTitulo, unidadMedida) {
+
+    try {
+
+        const option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '<b>{b}</b>: {d}% ({c} ' + unidadMedida + ')'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 15,
+                top: 20
+            },
+            series: [
+                {
+                    name: 'Volumen',
+                    type: 'pie',
+                    radius: ['45%', '80%'],        // más pequeña para dejar espacio a las etiquetas
+                    center: ['68%', '50%'],       // más a la derecha
+                    label: {
+                        formatter: '{d}%',
+                        width: 120,
+                        overflow: 'break',          // salta de línea en vez de cortar
+                        fontSize: 12
+                    },
+                    labelLine: { length: 10, length2: 8 },
+                    avoidLabelOverlap: true,
+                    data: datos,
+                    /*emphasis: {
+                        scale: true,
+                        scaleSize: 12,
+                        itemStyle: {
+                            shadowBlur: 30,
+                            shadowOffsetY: 12,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },*/
+                    itemStyle: {
+                        // borderColor: '#ffffff',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        shadowBlur: 18,
+                        shadowOffsetX: 4,
+                        shadowOffsetY: 8,
+                        shadowColor: 'rgba(0, 0, 0, 0.35)'
+                    },
+                    /*radius: ['0%', '68%'],          
+                    center: ['50%', '48%'],
+                    startAngle: 90,
+                    avoidLabelOverlap: true*/
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        objetoEcharts.setOption(option);
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+}
+
 function GraficarBarrasVerticales(objetoEcharts, datos, series, titulo, subTitulo, unidadMedida) {
 
     try {
@@ -486,7 +557,9 @@ function GraficarSankeyTransito(objetoEcharts, data, titulo, subTitulo, unidadMe
                     name: 'BOLIVIA', etiqueta: 'BOLIVIA', depth: 1,
                     itemStyle: { color: banderaBolivia, borderColor: '#1e293b', borderWidth: 1 },
                     label: {
-                        position: 'top', align: 'center', distance: 6,
+                        position: 'bottom', 
+                        align: 'center', 
+                        distance: 6,
                         formatter: p => '{c|BOLIVIA}\n{c|' + fmt(p.value) + '}',
                         rich: { c: { fontWeight: 'bold', fontSize: 11, lineHeight: 14 } }
                     }
@@ -503,19 +576,24 @@ function GraficarSankeyTransito(objetoEcharts, data, titulo, subTitulo, unidadMe
 
         const botones = () => claves.map((c, i) => ({
             type: 'group',
-            right: 20 + (claves.length - 1 - i) * 112,
+            right: 20 + (claves.length - 1 - i) * 130,
             top: 12,
             onclick: () => dibuja(c.k),
             children: [
                 {
-                    type: 'rect', shape: { width: 104, height: 26, r: 8 },
+                    type: 'rect', 
+                    shape: { width: 110, height: 26, r: 5 },
+                    right: 10,
                     style: {
                         fill: c.k === claveActiva ? '#2563eb' : 'rgba(0,0,0,0)',
                         stroke: c.k === claveActiva ? '#2563eb' : '#94a3b8'
                     }
                 },
                 {
-                    type: 'text', left: 'center', top: 6,
+                    type: 'text', 
+                    // left: 'center', 
+                    top: 6,
+                    right: 30,
                     style: {
                         text: c.txt, fontSize: 11, fontWeight: 'bold',
                         fill: c.k === claveActiva ? '#fff' : '#64748b'
@@ -524,7 +602,7 @@ function GraficarSankeyTransito(objetoEcharts, data, titulo, subTitulo, unidadMe
             ]
         }));
 
-        const paises = () => [['ARGENTINA', '10%'], ['BOLIVIA', '50%'], ['BRASIL', '90%']].map(([txt, x]) => ({
+        const paises = () => [['ARGENTINA', '10%'], ['BOLIVIA', '49%'], ['BRASIL', '88%']].map(([txt, x]) => ({
             type: 'text', left: x, top: 56,
             style: { text: txt, fontSize: 11, fontWeight: 'bold', fill: '#64748b', textAlign: 'center' }
         }));
@@ -534,7 +612,7 @@ function GraficarSankeyTransito(objetoEcharts, data, titulo, subTitulo, unidadMe
             const { nodes, links } = construye(clave);
             objetoEcharts.setOption({
                 animationDuration: 500,
-                title: { text: titulo, subtext: subTitulo, left: 'left' },
+                // title: { text: titulo, subtext: subTitulo, left: 'left' },
                 tooltip: {
                     trigger: 'item',
                     formatter: p => p.dataType === 'edge'

@@ -657,6 +657,21 @@
                 
             </div>
         </div>
+         <div class="grid-stack-item" gs-id="gi-perfil-pcs" gs-w="12" gs-h="12" tip="Perfiles">
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">PCS</h3>
+                            <div class="tp-subtitle">Posición real (Km)</div>
+                        </div>
+                        <span class="tp-unit">Bbls</span>
+                    </div>
+                    <div id="chartPCS" style="width: 100%; height: 100%;"></div>
+                </div>
+                
+            </div>
+        </div>
 
         <div class="grid-stack-item" gs-id="gi-nov-separador-novedades" gs-w="12" gs-h="1" tip="Novedades">
             <div class="grid-stack-item-content grid-stack-separador">
@@ -717,6 +732,49 @@
         
 
         <!-- COMERCIAL -->
+        <div class="grid-stack-item borde-1" gs-id="gi-com-item-volumen-ejecutado" gs-w="3" gs-h="3" id="gi-com-item-volumen-ejecutado" tip="Comercial">
+            <div class="grid-stack-item-content kpi-card" id="dotComKpiVolumenEjecutado">
+                <div class="kpi-label">Volúmen Ejecutado</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">1,35</span>
+                    <span class="kpi-unit">MMmcd</span>
+                </div>
+                <div class="cumplimiento-hoy kpi-delta up">1,2% vs. Programado</div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item borde-1" gs-id="gi-com-item-volumen-programado" gs-w="3" gs-h="3" id="gi-com-item-volumen-programado" tip="Comercial">
+            <div class="grid-stack-item-content kpi-card" id="dotComKpiVolumenProgramado">
+                <div class="kpi-label">Volumen Programado</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">1,33</span>
+                    <span class="kpi-unit">MMmcd</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item borde-1" gs-id="gi-com-item-programado-hoy" gs-w="3" gs-h="3" id="gi-com-item-programado-hoy" tip="Comercial">
+            <div class="grid-stack-item-content kpi-card" id="dotComKpiProgramadoHoy">
+                <div class="kpi-label">Programado Hoy</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">1,33</span>
+                    <span class="kpi-unit">MMmcd</span>
+                </div>
+                <div class="cumplimiento-ayer kpi-delta up">▲ 9.2% vs. ayer</div>
+            </div>
+        </div>
+
+        <div class="grid-stack-item borde-1" gs-id="gi-com-item-proveedores-activos" gs-w="3" gs-h="3" id="gi-com-item-proveedores-activos" tip="Comercial">
+            <div class="grid-stack-item-content kpi-card" id="dotComKpiProveedoresActivos">
+                <div class="kpi-label">Proveedores Activos</div>
+                <div class="kpi-value-row">
+                    <span class="kpi-value">7</span>
+                    <span class="kpi-unit">de 8</span>
+                </div>
+            </div>
+        </div>
+
+
         <div class="grid-stack-item" gs-id="gi-com-separador-comercial" gs-w="12" gs-h="1" tip="Comercial">
             <div class="grid-stack-item-content grid-stack-separador">
                 <div style="width: 100%; height: 100%;">GRÁFICOS COMERCIALES</div>
@@ -724,7 +782,17 @@
         </div>
         <div class="grid-stack-item" gs-id="gi-com-transito-resumen" gs-w="12" gs-h="12" tip="Comercial">
             <div class="grid-stack-item-content">
-                <div id="chartGasTransitoResumen" style="width: 100%; height: 100%;"></div>
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Flujo Argentina → Bolivia → Brasil</h3>
+                            <div class="tp-subtitle">Ancho del flujo proporcional al volumen</div>
+                        </div>
+                        <span class="tp-unit">MMmcd</span>
+                    </div>
+                    <div id="chartGasTransitoResumen" style="width: 100%; height: 100%;"></div>
+                </div>
+                
             </div>
         </div>
 
@@ -743,7 +811,102 @@
                 
             </div>
         </div>
+
+        <div class="grid-stack-item" gs-id="gi-com-ejecutado-proveedor" gs-w="6" gs-h="8" tip="Comercial">
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Volumen Ejecutado x Proveedor</h3>
+                            <div class="tp-subtitle">Proveedores (Argentina)</div>
+                        </div>
+                        <span class="tp-unit">MMmcd</span>
+                    </div>
+                    <div id="domEjecutadoProveedor" style="width: 100%; height: 100%;"></div>
+                </div>
+                
+            </div>
+        </div>
+
+         <div class="grid-stack-item" gs-id="gi-com-ejecutado-cliente" gs-w="6" gs-h="8" tip="Comercial">
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Volumen Ejecutado x Cliente</h3>
+                            <div class="tp-subtitle">Clientes (Brasil)</div>
+                        </div>
+                        <span class="tp-unit">MMmcd</span>
+                    </div>
+                    <div id="domEjecutadoCliente" style="width: 100%; height: 100%;"></div>
+                </div>
+                
+            </div>
+        </div>
        
+        <div class="grid-stack-item" gs-id="gi-com-participacion-proveedor" gs-w="6" gs-h="12" tip="Comercial">
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Participacion x Proveedor</h3>
+                            <div class="tp-subtitle">Proveedores (Argentina)</div>
+                        </div>
+                        <span class="tp-unit">MMmcd</span>
+                    </div>
+                    <div id="domParticipacionProveedor" style="width: 100%; height: 100%;"></div>
+                </div>
+                
+            </div>
+        </div>
+
+         <div class="grid-stack-item" gs-id="gi-com-participacion-cliente" gs-w="6" gs-h="12" tip="Comercial">
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Participacion x Cliente</h3>
+                            <div class="tp-subtitle">Clientes (Brasil)</div>
+                        </div>
+                        <span class="tp-unit">MMmcd</span>
+                    </div>
+                    <div id="domParticipacionCliente" style="width: 100%; height: 100%;"></div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-id="gi-gas-evolucion-mensual-proveedor" gs-w="6" gs-h="12" tip="Gasoductos">
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Evolución mensual x proveedor</h3>
+                            <div class="tp-subtitle">Volumen ejecutado diario (MMmcd)</div>
+                        </div>
+                        <span class="tp-unit">MMmcd</span>
+                    </div>
+                    <div id="chartGasEvolucionMensualProveedor" style="width: 100%; height: 100%;"></div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="grid-stack-item" gs-id="gi-gas-evolucion-mensual-cliente" gs-w="6" gs-h="12" tip="Gasoductos">
+            <div class="grid-stack-item-content">
+                <div class="tp-panel">
+                    <div class="tp-header">
+                        <div>
+                            <h3 class="tp-title">Evolución mensual x cliente</h3>
+                            <div class="tp-subtitle">Volumen ejecutado diario (MMmcd)</div>
+                        </div>
+                        <span class="tp-unit">MMmcd</span>
+                    </div>
+                    <div id="chartGasEvolucionMensualCliente" style="width: 100%; height: 100%;"></div>
+                </div>
+                
+            </div>
+        </div>
 
 
 

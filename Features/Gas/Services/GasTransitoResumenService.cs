@@ -22,6 +22,9 @@ public class GasTransitoResumenService : IGasTransitoResumenService
         var hoy = new List<double>();
         var entrega_mutun = new List<double>();
 
+        var lista_proveedores = new List<object>();
+        var lista_clientes = new List<object>();
+
         var cantidad_datos = 0;
 
         const string sql = @"
@@ -29,7 +32,7 @@ public class GasTransitoResumenService : IGasTransitoResumenService
                     proveedor,
                     cliente,
                     ROUND(ISNULL(programado, 0), 2) AS programado,
-                    ROUND(ISNULL(porcentaje_participacion, 0), 2) AS porcentaje_participacion,
+                    ROUND(ISNULL(porcentaje_participacion * 100, 0), 2) AS porcentaje_participacion,
                     ROUND(ISNULL(ejecutado, 0), 2) AS ejecutado,
                     ROUND(ISNULL(hoy, 0), 2) AS hoy,
                     ROUND(ISNULL(entrega_mutun, 0), 2) AS entrega_mutun
@@ -54,6 +57,16 @@ public class GasTransitoResumenService : IGasTransitoResumenService
             ejecutado.Add(lector.GetRequiredDouble("ejecutado"));
             hoy.Add(lector.GetRequiredDouble("hoy"));
             entrega_mutun.Add(lector.GetRequiredDouble("entrega_mutun"));
+
+            lista_proveedores.Add(new {
+                name = lector.GetRequiredString("proveedor").Trim(),
+                value = lector.GetRequiredDouble("ejecutado")
+            });
+
+            lista_clientes.Add(new {
+                name = lector.GetRequiredString("cliente").Trim(),
+                value = lector.GetRequiredDouble("ejecutado")
+            });
             cantidad_datos++;
         }
 
@@ -66,6 +79,8 @@ public class GasTransitoResumenService : IGasTransitoResumenService
             ejecutado,
             hoy,
             entrega_mutun,
+            lista_proveedores,
+            lista_clientes,
             cantidad_datos
         };
 

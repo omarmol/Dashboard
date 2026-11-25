@@ -428,3 +428,145 @@ async function CargarGasParticipacionXCargador(nombreDOM, tema, titulo, subTitul
 
 }
 
+
+async function CargarGasVolumenEjecutadoXProveedor(nombreDOM, tema, titulo, subTitulo, unidadMedida, fechaStr) {
+
+    try {
+        let objDOM = document.getElementById(nombreDOM);
+        let eChart = echarts.init(objDOM, tema);
+        eChart.showLoading();
+
+        let res = await fetch('api/gas/transito-resumen?fecha=' + fechaStr + '');
+        let dataOriginal = await res.json();
+
+        let series = [];
+
+        series.push({ 
+            name: 'Volumen', 
+            type: 'bar', 
+            itemStyle: {
+                borderRadius: [2, 2, 0, 0]
+            },
+            colorBy: 'data', 
+            data: dataOriginal.ejecutado });
+
+
+
+        if (dataOriginal.cantidad_datos > 0) {
+            GraficarBarrasHorizontales(eChart, dataOriginal.proveedor, series, titulo, subTitulo, unidadMedida)
+        } else {
+            GraficarSinDatos(eChart, titulo, subTitulo);
+        }
+
+        eChart.hideLoading();
+        //eChart.resize();
+        CHARTS.push(eChart);
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+
+
+
+}
+
+async function CargarGasVolumenEjecutadoXCliente(nombreDOM, tema, titulo, subTitulo, unidadMedida, fechaStr) {
+
+    try {
+        let objDOM = document.getElementById(nombreDOM);
+        let eChart = echarts.init(objDOM, tema);
+        eChart.showLoading();
+
+        let res = await fetch('api/gas/transito-resumen?fecha=' + fechaStr + '');
+        let dataOriginal = await res.json();
+
+        let series = [];
+
+        series.push({ 
+            name: 'Volumen', 
+            type: 'bar', 
+            itemStyle: {
+                borderRadius: [2, 2, 0, 0]
+            },
+            colorBy: 'data', 
+            data: dataOriginal.ejecutado });
+
+
+
+        if (dataOriginal.cantidad_datos > 0) {
+            GraficarBarrasHorizontales(eChart, dataOriginal.cliente, series, titulo, subTitulo, unidadMedida)
+        } else {
+            GraficarSinDatos(eChart, titulo, subTitulo);
+        }
+
+        eChart.hideLoading();
+        //eChart.resize();
+        CHARTS.push(eChart);
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+
+}
+
+async function CargarGasParticipacionXProveedor(nombreDOM, tema, titulo, subTitulo, unidadMedida, fechaStr) {
+
+    try {
+        let objDOM = document.getElementById(nombreDOM);
+        let eChart = echarts.init(objDOM, tema);
+        eChart.showLoading();
+
+        let res = await fetch('api/gas/transito-resumen?fecha=' + fechaStr + '');
+        let dataOriginal = await res.json();
+
+        if (dataOriginal.cantidad_datos > 0) {
+            GraficarDonut(eChart, dataOriginal.lista_proveedores, titulo, subTitulo, unidadMedida)
+        } else {
+            GraficarSinDatos(eChart, titulo, subTitulo);
+        }
+
+
+        eChart.hideLoading();
+        //eChart.resize();
+        CHARTS.push(eChart);
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+
+}
+
+async function CargarGasParticipacionXCliente(nombreDOM, tema, titulo, subTitulo, unidadMedida, fechaStr) {
+
+    try {
+        let objDOM = document.getElementById(nombreDOM);
+        let eChart = echarts.init(objDOM, tema);
+        eChart.showLoading();
+
+        let res = await fetch('api/gas/transito-resumen?fecha=' + fechaStr + '');
+        let dataOriginal = await res.json();
+
+        if (dataOriginal.cantidad_datos > 0) {
+            GraficarDonut(eChart, dataOriginal.lista_clientes, titulo, subTitulo, unidadMedida)
+        } else {
+            GraficarSinDatos(eChart, titulo, subTitulo);
+        }
+
+
+        eChart.hideLoading();
+        //eChart.resize();
+        CHARTS.push(eChart);
+
+    }
+    catch (error) {
+        console.error("Ocurrió un error: ", error);
+        alert("Ocurrió un error: " + error);
+    }
+
+}

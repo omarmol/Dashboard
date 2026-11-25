@@ -84,7 +84,8 @@ public class CargarExcelService : ICargarExcelService
         [
             Fuente("perfil_ossa1", ColumnasPerfil("OSSA-1")),
             Fuente("perfil_pvt", ColumnasPerfil("PVT", "TJA", 175)),
-            Fuente("perfil_pcolpii", ColumnasPerfil("PCOLP-2", "EORU", 163))
+            Fuente("perfil_pcolpii", ColumnasPerfil("PCOLP-2", "EORU", 163)),
+            Fuente("perfil_pcs", ColumnasPerfil("PCS", "EQQH", 303))
         ]),
         new("imagenes",
         [
